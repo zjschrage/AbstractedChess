@@ -1,15 +1,18 @@
 package model;
 
-import java.util.Optional;
-
 public class Tile {
-    Optional<Piece> piece;
+
+    private Piece piece;
 
     public Tile() {
-        piece = Optional.ofNullable(null);
+        piece = null;
     }
 
     public Tile(Piece p) {
-        piece = Optional.ofNullable(p);
+        piece = p;
+    }
+
+    public Piece getPiece() {
+        return piece;
     }
 }
