@@ -1,12 +1,11 @@
-%p
-%n
-%b
-%r
-%q
-%k
+%P
+%N
+%B
+%R
+%Q
+%K
 
-?8,8
-?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
+?rnbqkbnr/pp3pp1/8/8/8/8/2P1P1P1/RNBQKBNR
 
 //Knight
 
@@ -14,19 +13,19 @@ $nV1 = [-2, -1 ,1]
 $nV2 = [-1, -2 ,1]
 $nV3 = [1, -2 ,1]
 $nV4 = [2, -1 ,1]
-$nV1 = [-2, 1 ,1]
-$nV2 = [-1, 2 ,1]
-$nV3 = [1, 2 ,1]
-$nV4 = [2, 1 ,1]
+$nV5 = [-2, 1 ,1]
+$nV6 = [-1, 2 ,1]
+$nV7 = [1, 2 ,1]
+$nV8 = [2, 1 ,1]
 
-n.does(nV1, ~, ~)
-n.does(nV2, ~, ~)
-n.does(nV3, ~, ~)
-n.does(nV4, ~, ~)
-n.does(nV5, ~, ~)
-n.does(nV6, ~, ~)
-n.does(nV7, ~, ~)
-n.does(nV8, ~, ~)
+N.does(nV1, ~, ~)
+N.does(nV2, ~, ~)
+N.does(nV3, ~, ~)
+N.does(nV4, ~, ~)
+N.does(nV5, ~, ~)
+N.does(nV6, ~, ~)
+N.does(nV7, ~, ~)
+N.does(nV8, ~, ~)
 
 //Bishop
 
@@ -35,10 +34,10 @@ $bV2 = [-1, 1 ,-1]
 $bV3 = [1, -1 ,-1]
 $bV4 = [1, 1 ,-1]
 
-b.does(bV1, ~, ~)
-b.does(bV2, ~, ~)
-b.does(bV3, ~, ~)
-b.does(bV4, ~, ~)
+B.does(bV1, ~, ~)
+B.does(bV2, ~, ~)
+B.does(bV3, ~, ~)
+B.does(bV4, ~, ~)
 
 //Rook
 
@@ -47,21 +46,21 @@ $rV2 = [0, -1 ,-1]
 $rV3 = [1, 0 ,-1]
 $rV4 = [-1, 0 ,-1]
 
-r.does(rV1, ~, ~)
-r.does(rV2, ~, ~)
-r.does(rV3, ~, ~)
-r.does(rV4, ~, ~)
+R.does(rV1, ~, ~)
+R.does(rV2, ~, ~)
+R.does(rV3, ~, ~)
+R.does(rV4, ~, ~)
 
 //Queen
 
-q.does(bV1, ~, ~)
-q.does(bV2, ~, ~)
-q.does(bV3, ~, ~)
-q.does(bV4, ~, ~)
-q.does(rV1, ~, ~)
-q.does(rV2, ~, ~)
-q.does(rV3, ~, ~)
-q.does(rV4, ~, ~)
+Q.does(bV1, ~, ~)
+Q.does(bV2, ~, ~)
+Q.does(bV3, ~, ~)
+Q.does(bV4, ~, ~)
+Q.does(rV1, ~, ~)
+Q.does(rV2, ~, ~)
+Q.does(rV3, ~, ~)
+Q.does(rV4, ~, ~)
 
 //King
 
@@ -74,14 +73,14 @@ $kV6 = [0, -1 ,1]
 $kV7 = [1, 0 ,1]
 $kV8 = [-1, 0 ,1]
 
-k.does(kV1, ~, ~)
-k.does(kV2, ~, ~)
-k.does(kV3, ~, ~)
-k.does(kV4, ~, ~)
-k.does(kV5, ~, ~)
-k.does(kV6, ~, ~)
-k.does(kV7, ~, ~)
-k.does(kV8, ~, ~)
+K.does(kV1, ~, ~)
+K.does(kV2, ~, ~)
+K.does(kV3, ~, ~)
+K.does(kV4, ~, ~)
+K.does(kV5, ~, ~)
+K.does(kV6, ~, ~)
+K.does(kV7, ~, ~)
+K.does(kV8, ~, ~)
 
 //Pawns
 
@@ -95,16 +94,24 @@ $PV2 = [0, -2, 1]
 $PV3 = [-1, -1, 1]
 $PV4 = [1, -1, 1]
 
-#pFC1 = (~, ~, </, (times_moved, 0)>)
+!pP1 = [TIMES_MOVED, 0];
+
+#pFC1 = (~, ~, </, pP1>)
 #pIC1 = (~, <*, pV1>, ~)
 #pIC2 = (~, <*, pV2>, ~)
-p.onlyDoes(pV1, ~, pIC1)
-p.onlyDoes(pV2, pFC1, pIC1)
-p.onlyDoes(pV2, ~, pIC2)
-
-#PIC1 = (~, <*, pV1>, ~)
-#PIC2 = (~, <*, pV2>, ~)
 
 P.onlyDoes(pV1, ~, pIC1)
 P.onlyDoes(pV2, pFC1, pIC1)
 P.onlyDoes(pV2, ~, pIC2)
+P.onlyDoes(pV3, <-, pV3>, ~)
+P.onlyDoes(pV4, <-, pV4>, ~)
+
+
+#PIC1 = (~, <*, PV1>, ~)
+#PIC2 = (~, <*, PV2>, ~)
+
+p.onlyDoes(PV1, ~, PIC1)
+p.onlyDoes(PV2, pFC1, PIC1)
+p.onlyDoes(PV2, ~, PIC2)
+p.onlyDoes(PV3, <-, PV3>, ~)
+p.onlyDoes(PV4, <-, PV4>, ~)

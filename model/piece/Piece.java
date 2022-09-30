@@ -3,6 +3,7 @@ package model.piece;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import model.board.Board;
 import model.board.Coordinate;
@@ -31,7 +32,14 @@ public class Piece {
         lastTurnNumberMoved = -1;
     }
 
-    public void init(Player playerId, List<MovementPattern> movementPattern, Map<MovementPattern, Condition> fulfillCond,  Map<MovementPattern, Condition> inhibitoryCond, Coordinate coordinate) {
+    public Piece(PieceBehavior behavior, Coordinate coordinate) {
+        this.behavior = behavior;
+        this.coordinate = coordinate;
+        timesMoved = 0;
+        lastTurnNumberMoved = -1;
+    }
+
+    public void init(Player playerId, Set<MovementPattern> movementPattern, Map<MovementPattern, Condition> fulfillCond,  Map<MovementPattern, Condition> inhibitoryCond, Coordinate coordinate) {
         this.behavior.getTID().playerId = playerId;
         this.behavior.setBehavior(movementPattern, fulfillCond, inhibitoryCond);
         this.coordinate = coordinate;

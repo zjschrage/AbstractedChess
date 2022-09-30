@@ -5,22 +5,21 @@ import java.util.List;
 import java.util.Map;
 
 import model.piece.Piece;
+import model.piece.Player;
 import model.rules.Action;
 
 public class Board {
     private Map<Coordinate, Tile> board;
-    private int xDimension;
-    private int yDimension;
+    private Dimension dimension;
 
     public Board() {
         board = new HashMap<Coordinate, Tile>();
     }
 
-    public void initBoard(int x, int y, Map<Piece, Coordinate> pieces) {
-        this.xDimension = x;
-        this.yDimension = y;
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
+    public void initBoard(Dimension d, Map<Piece, Coordinate> pieces) {
+        this.dimension = d;
+        for (int i = 0; i < d.x(); i++) {
+            for (int j = 0; j < d.y(); j++) {
                 board.put(new Coordinate(i, j), new Tile());
             }
         }
@@ -30,10 +29,34 @@ public class Board {
     }
 
     public void printBoard() {
-        for (int i = 0; i < yDimension; i++) {
-            for (int j = 0; j < xDimension; j++) {
+        for (int i = dimension.y() - 1; i >= 0; i--) {
+            for (int j = 0; j < dimension.x(); j++) {
                 Piece p = board.get(new Coordinate(j, i)).getPiece();
-                if (p != null) System.out.print(p.toString() + " ");
+                if (p != null) {
+                    if (p.getTID().playerId == Player.WHITE) System.out.print((char)p.getTID().id + " ");
+                    else System.out.print((char)(p.getTID().id + 32) + " ");
+                }
+                else System.out.print("_ ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public void printBoard(Piece piece) {
+        List<Coordinate> fm = piece.getFeasableMoves(this);
+        for (int i = dimension.y() - 1; i >= 0; i--) {
+            for (int j = 0; j < dimension.x(); j++) {
+                Coordinate c = new Coordinate(j, i);
+                if (fm.contains(c)) {
+                    System.out.print("* ");
+                    continue;
+                }
+                Piece p = board.get(c).getPiece();
+                if (p != null) {
+                    if (p.getTID().playerId == Player.WHITE) System.out.print((char)p.getTID().id + " ");
+                    else System.out.print((char)(p.getTID().id + 32) + " ");
+                }
                 else System.out.print("_ ");
             }
             System.out.println();
@@ -45,16 +68,8 @@ public class Board {
         return board;
     }
 
-    public int getXDimension() {
-        return xDimension;
-    }
-
-    public int getYDimension() {
-        return yDimension;
-    }
-
     public boolean checkInBounds(Coordinate c) {
-        return (c.x() >= 0 && c.x() < xDimension && c.y() >= 0 && c.y() < yDimension);
+        return (c.x() >= 0 && c.x() < dimension.x() && c.y() >= 0 && c.y() < dimension.y());
     }
 
     public void move(Coordinate from, Coordinate to, List<Action> actions) {

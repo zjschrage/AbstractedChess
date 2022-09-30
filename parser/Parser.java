@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Map.Entry;
 
 import model.rules.Condition;
+import model.board.Board;
 import model.board.Coordinate;
 import model.piece.PieceBehavior;
 import model.piece.PieceType;
@@ -20,6 +20,7 @@ import model.piece.PieceTypeID;
 import model.piece.Player;
 import model.rules.MovementPattern;
 import model.rules.Property;
+import model.rules.PropertyType;
 
 public class Parser {
 
@@ -53,6 +54,7 @@ public class Parser {
     private Map<String, Coordinate> coordinateTable;
     private Map<String, Condition> conditionTable;
     private Map<String, Property> propertyTable;
+    private String fen;
 
     public Parser() {
         functionTable = new HashMap<>();
@@ -61,8 +63,16 @@ public class Parser {
         vectorTable = new HashMap<>();
         coordinateTable = new HashMap<>();
         conditionTable = new HashMap<>();
+        propertyTable = new HashMap<>();
         initFunctionTable();
         initSymbolTable();
+    }
+
+    public Board generateBoard() {
+        Board b = new Board();
+        FenParser f = new FenParser(pieceTable);
+        b.initBoard(f.getDimensions(fen), f.configurePieces(fen));
+        return b;
     }
 
     public void loadGameFile() throws IOException {
@@ -73,10 +83,6 @@ public class Parser {
             processLine(line);
         }
         br.close();
-
-        // for (String s : vectorTable.keySet()) {
-        //     System.out.println(s + " " + vectorTable.get(s).toString());
-        // }
     }
 
     private void processLine(String line) {
@@ -88,11 +94,12 @@ public class Parser {
     private void pieceDeclaration(String line) {
         char piece = line.charAt(line.indexOf(PIECE_DECLARATOR) + 1);
         pieceTable.put(piece, new PieceBehavior(new PieceTypeID(Player.WHITE, (int)piece)));
-        pieceTable.put((char)(piece - ASCII_CASE_OFFSET), new PieceBehavior(new PieceTypeID(Player.BLACK, (int)piece)));
+        pieceTable.put((char)(piece + ASCII_CASE_OFFSET), new PieceBehavior(new PieceTypeID(Player.BLACK, (int)piece)));
     }
 
     private void layout(String line) {
-
+        int declaration = line.indexOf(LAYOUT_DECLARATOR) + 1;
+        fen = line.substring(declaration, line.length()).trim();
     }
 
     private void vectorDeclaration(String line) {
@@ -115,7 +122,9 @@ public class Parser {
         int declaration = line.indexOf(CONDITION_DECLARATOR) + 1;
         int operator = line.indexOf(ASSIGNMENT_OPERATOR);
         String conditionSymbol = line.substring(declaration, operator).trim();
+        conditionTable.putIfAbsent(conditionSymbol, new Condition(new HashMap<>(), new HashMap<>(), new HashMap<>()));
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        args = reconstructedArgs(args);
         Optional<SimpleEntry<PieceType, Coordinate>> absoluteCondition = parseAbsoluteCondition(args[0].trim());
         Optional<SimpleEntry<PieceType, MovementPattern>> relativeCondition = parseRelativeCondition(args[1].trim());
         Optional<SimpleEntry<PieceType, Property>> propertyCondition = parsePropertyCondition(args[2].trim());
@@ -124,33 +133,48 @@ public class Parser {
         if (propertyCondition.isPresent()) conditionTable.get(conditionSymbol).addPropertyCondition(propertyCondition.get());
     }
 
-    private Optional<SimpleEntry<PieceType, Coordinate>> parseAbsoluteCondition(String args) {
+    private String[] reconstructedArgs(String[] args) {
+        String[] reconstructedArgs = new String[3];
+        int fixedArgs = 0;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].trim().charAt(0) == LEFT_CARROT) {
+                reconstructedArgs[fixedArgs++] = args[i] + COMMA + args[i+1];
+                i++;
+            }
+            else reconstructedArgs[fixedArgs++] = args[i];
+        }
+        return reconstructedArgs;
+    }
+
+    private Optional<String[]> parseCondition(String args) {
         int l = args.indexOf(LEFT_CARROT);
         int r = args.indexOf(RIGHT_CARROT);
         if (l < 0 || r < 0) return Optional.empty();
-        String[] absoluteConditionArgs = getArgs(args, LEFT_CARROT, RIGHT_CARROT);
-        char key = absoluteConditionArgs[0].charAt(0);
-        String value = absoluteConditionArgs[1];
+        String[] parsedArgs = getArgs(args, LEFT_CARROT, RIGHT_CARROT);
+        return Optional.of(parsedArgs);
+    }
+
+    private Optional<SimpleEntry<PieceType, Coordinate>> parseAbsoluteCondition(String args) {
+        Optional<String[]> conditionArgs = parseCondition(args);
+        if (!conditionArgs.isPresent()) return Optional.empty();
+        char key = conditionArgs.get()[0].charAt(0);
+        String value = conditionArgs.get()[1].trim();
         return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), coordinateTable.get(value)));
     }
 
     private Optional<SimpleEntry<PieceType, MovementPattern>> parseRelativeCondition(String args) {
-        int l = args.indexOf(LEFT_CARROT);
-        int r = args.indexOf(RIGHT_CARROT);
-        if (l < 0 || r < 0) return Optional.empty();
-        String[] absoluteConditionArgs = getArgs(args, LEFT_CARROT, RIGHT_CARROT);
-        char key = absoluteConditionArgs[0].charAt(0);
-        String value = absoluteConditionArgs[1];
+        Optional<String[]> conditionArgs = parseCondition(args);
+        if (!conditionArgs.isPresent()) return Optional.empty();
+        char key = conditionArgs.get()[0].charAt(0);
+        String value = conditionArgs.get()[1].trim();
         return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), vectorTable.get(value)));
     }
 
     private Optional<SimpleEntry<PieceType, Property>> parsePropertyCondition(String args) {
-        int l = args.indexOf(LEFT_CARROT);
-        int r = args.indexOf(RIGHT_CARROT);
-        if (l < 0 || r < 0) return Optional.empty();
-        String[] absoluteConditionArgs = getArgs(args, LEFT_CARROT, RIGHT_CARROT);
-        char key = absoluteConditionArgs[0].charAt(0);
-        String value = absoluteConditionArgs[1];
+        Optional<String[]> conditionArgs = parseCondition(args);
+        if (!conditionArgs.isPresent()) return Optional.empty();
+        char key = conditionArgs.get()[0].charAt(0);
+        String value = conditionArgs.get()[1].trim();
         return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), propertyTable.get(value)));
     }
 
@@ -163,29 +187,35 @@ public class Parser {
     }
 
     private void propertyDeclaration(String line) {
-        
+        int declaration = line.indexOf(PROPERTY_DECLARATOR) + 1;
+        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
+        String propertySymbol = line.substring(declaration, operator).trim();
+        String[] args = getArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
+        propertyTable.put(propertySymbol, new Property(PropertyType.valueOf(args[0]), propertiesLister(args)));
     }
 
     private void does(String line) {
         char piece = line.charAt(0);
-        char complementPiece = (char)(piece - ASCII_CASE_OFFSET);
+        char complementPiece = (char)(piece + ASCII_CASE_OFFSET);
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
-        //Write this implementation
-        List<MovementPattern> movementPattern = new ArrayList<>();
-        Map<MovementPattern, Condition> fulfillCond = new HashMap<>();
-        Map<MovementPattern, Condition> inhibitoryCond = new HashMap<>();
-        pieceTable.get(piece).setBehavior(movementPattern, fulfillCond, inhibitoryCond);
-        pieceTable.get(complementPiece).setBehavior(movementPattern, fulfillCond, inhibitoryCond);
+        assignBehavior(piece, args);
+        assignBehavior(complementPiece, args);
     }
 
     private void onlyDoes(String line) {
         char piece = line.charAt(0);
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
-        //Write this implementation
-        List<MovementPattern> movementPattern = new ArrayList<>();
-        Map<MovementPattern, Condition> fulfillCond = new HashMap<>();
-        Map<MovementPattern, Condition> inhibitoryCond = new HashMap<>();
-        pieceTable.get(piece).setBehavior(movementPattern, fulfillCond, inhibitoryCond);
+        assignBehavior(piece, args);
+    }
+
+    private void assignBehavior(char piece, String[] args) {
+        MovementPattern mp = vectorTable.get(args[0].trim());
+        Condition fc = conditionTable.get(args[1].trim());
+        Condition ic = conditionTable.get(args[2].trim());
+        if (mp == null) return;
+        pieceTable.get(piece).addMovementPattern(mp);
+        if (fc != null) pieceTable.get(piece).addFulfillCond(mp, fc);
+        if (ic != null) pieceTable.get(piece).addInhibitoryCond(mp, ic);
     }
 
     private String[] getArgs(String s, Character left, Character right) {
@@ -211,6 +241,14 @@ public class Parser {
 
     private int stoi(String s) {
         return Integer.parseInt(s.trim());
+    }
+
+    private List<Object> propertiesLister(String[] args) {
+        List<Object> properties = new ArrayList<>();
+        for (int i = 1; i < args.length; i++) {
+            properties.add(args[i].trim());
+        }
+        return properties;
     }
     
 }

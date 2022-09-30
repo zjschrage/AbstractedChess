@@ -17,6 +17,10 @@ public class PieceType {
         this.selfInstance = selfInstance;
     }
 
+    public String toString() {
+        return "[" + type + " " + all + " " + friendly + " " + enemy + " " + selfInstance + "]";
+    }
+
      
     
 }

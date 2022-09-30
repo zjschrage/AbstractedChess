@@ -73,4 +73,19 @@ public class Condition {
         return retVal;
     }
 
+    public void print() {
+        mapPrinter(absoluteCondition);
+        mapPrinter(relativeCondition);
+        mapPrinter(propertyCondition);
+    }
+
+    private <V> void mapPrinter(Map<PieceType, V> map) {
+        System.out.println("MAP:");
+        for (PieceType k : map.keySet()) {
+            System.out.print(k.toString());
+            System.out.println(" " + map.get(k).toString());
+        }
+        System.out.println();
+    }
+
 }
