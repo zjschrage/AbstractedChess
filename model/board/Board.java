@@ -1,8 +1,11 @@
-package model;
+package model.board;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import model.piece.Piece;
+import model.rules.Action;
 
 public class Board {
     private Map<Coordinate, Tile> board;
@@ -27,9 +30,9 @@ public class Board {
     }
 
     public void printBoard() {
-        for (int i = 0; i < xDimension; i++) {
-            for (int j = 0; j < yDimension; j++) {
-                Piece p = board.get(new Coordinate(i, j)).getPiece();
+        for (int i = 0; i < yDimension; i++) {
+            for (int j = 0; j < xDimension; j++) {
+                Piece p = board.get(new Coordinate(j, i)).getPiece();
                 if (p != null) System.out.print(p.toString() + " ");
                 else System.out.print("_ ");
             }

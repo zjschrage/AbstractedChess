@@ -1,4 +1,4 @@
-package model;
+package model.rules;
 
 public class Action {
     //A side effect aside from piece movement

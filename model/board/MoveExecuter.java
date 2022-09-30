@@ -1,4 +1,4 @@
-package model;
+package model.board;
 
 public class MoveExecuter {
     
