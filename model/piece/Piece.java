@@ -71,16 +71,26 @@ public class Piece {
         return behavior.getTID();
     }
 
+    public void updateStatistics(Coordinate c, int turn) {
+        coordinate = c;
+        timesMoved++;
+        lastTurnNumberMoved = turn;
+    }
+
+    public int getTimesMoved() {
+        return timesMoved;
+    }
+
+    public int getLastTurnMoved() {
+        return lastTurnNumberMoved;
+    }
+
     private boolean verifyConditions(Condition fulfillCond, Condition inhibitoryCond, Coordinate c, Board b) {
         boolean fCond = true;
         boolean iCond = false;
         if (fulfillCond != null) fCond = fulfillCond.verifyCondition(getTID(), c, b, ConditionType.FULFILL);
         if (inhibitoryCond != null) iCond = inhibitoryCond.verifyCondition(getTID(), c, b, ConditionType.INHIBIT);
         return !(fCond && !iCond);
-    }
-
-    public String toString() {
-        return String.format("%d", behavior.getTID().playerId.ordinal());
     }
 
 }

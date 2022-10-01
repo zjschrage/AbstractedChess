@@ -9,6 +9,7 @@ import model.piece.Player;
 import model.rules.Action;
 
 public class Board {
+
     private Map<Coordinate, Tile> board;
     private Dimension dimension;
 
@@ -72,7 +73,10 @@ public class Board {
         return (c.x() >= 0 && c.x() < dimension.x() && c.y() >= 0 && c.y() < dimension.y());
     }
 
-    public void move(Coordinate from, Coordinate to, List<Action> actions) {
-
+    public boolean move(Coordinate from, Coordinate to) {
+        Piece p = board.get(from).getPiece();
+        if (!p.getFeasableMoves(this).contains(to)) return false;
+        board.get(to).placePiece(board.get(from).pickUpPiece());
+        return true;
     }
 }

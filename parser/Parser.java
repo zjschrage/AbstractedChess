@@ -50,9 +50,9 @@ public class Parser {
     private Map<String, SymbolMapper> functionTable;
     private Map<Character, SymbolMapper> symbolTable;
     private Map<Character, PieceBehavior> pieceTable;
-    private Map<String, MovementPattern> vectorTable;
-    private Map<String, Coordinate> coordinateTable;
     private Map<String, Condition> conditionTable;
+    private Map<String, Coordinate> coordinateTable;
+    private Map<String, MovementPattern> vectorTable;
     private Map<String, Property> propertyTable;
     private String fen;
 
@@ -125,9 +125,9 @@ public class Parser {
         conditionTable.putIfAbsent(conditionSymbol, new Condition(new HashMap<>(), new HashMap<>(), new HashMap<>()));
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
         args = reconstructedArgs(args);
-        Optional<SimpleEntry<PieceType, Coordinate>> absoluteCondition = parseAbsoluteCondition(args[0].trim());
-        Optional<SimpleEntry<PieceType, MovementPattern>> relativeCondition = parseRelativeCondition(args[1].trim());
-        Optional<SimpleEntry<PieceType, Property>> propertyCondition = parsePropertyCondition(args[2].trim());
+        Optional<SimpleEntry<PieceType, Coordinate>> absoluteCondition = parseConditionEntry(args[0].trim(), coordinateTable);
+        Optional<SimpleEntry<PieceType, MovementPattern>> relativeCondition = parseConditionEntry(args[1].trim(), vectorTable);
+        Optional<SimpleEntry<PieceType, Property>> propertyCondition = parseConditionEntry(args[2].trim(), propertyTable);
         if (absoluteCondition.isPresent()) conditionTable.get(conditionSymbol).addAbsoluteCondition(absoluteCondition.get());
         if (relativeCondition.isPresent()) conditionTable.get(conditionSymbol).addRelativeCondition(relativeCondition.get());
         if (propertyCondition.isPresent()) conditionTable.get(conditionSymbol).addPropertyCondition(propertyCondition.get());
@@ -154,28 +154,12 @@ public class Parser {
         return Optional.of(parsedArgs);
     }
 
-    private Optional<SimpleEntry<PieceType, Coordinate>> parseAbsoluteCondition(String args) {
+    private <T> Optional<SimpleEntry<PieceType, T>> parseConditionEntry(String args, Map<String, T> table) {
         Optional<String[]> conditionArgs = parseCondition(args);
         if (!conditionArgs.isPresent()) return Optional.empty();
         char key = conditionArgs.get()[0].charAt(0);
         String value = conditionArgs.get()[1].trim();
-        return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), coordinateTable.get(value)));
-    }
-
-    private Optional<SimpleEntry<PieceType, MovementPattern>> parseRelativeCondition(String args) {
-        Optional<String[]> conditionArgs = parseCondition(args);
-        if (!conditionArgs.isPresent()) return Optional.empty();
-        char key = conditionArgs.get()[0].charAt(0);
-        String value = conditionArgs.get()[1].trim();
-        return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), vectorTable.get(value)));
-    }
-
-    private Optional<SimpleEntry<PieceType, Property>> parsePropertyCondition(String args) {
-        Optional<String[]> conditionArgs = parseCondition(args);
-        if (!conditionArgs.isPresent()) return Optional.empty();
-        char key = conditionArgs.get()[0].charAt(0);
-        String value = conditionArgs.get()[1].trim();
-        return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), propertyTable.get(value)));
+        return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), table.get(value)));
     }
 
     private PieceType determinePieceType(char token) {
@@ -243,8 +227,8 @@ public class Parser {
         return Integer.parseInt(s.trim());
     }
 
-    private List<Object> propertiesLister(String[] args) {
-        List<Object> properties = new ArrayList<>();
+    private List<String> propertiesLister(String[] args) {
+        List<String> properties = new ArrayList<>();
         for (int i = 1; i < args.length; i++) {
             properties.add(args[i].trim());
         }

@@ -5,117 +5,118 @@
 %Q
 %K
 
-?rnbqkbnr/pp3pp1/8/8/8/8/2P1P1P1/RNBQKBNR
+?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
 //Knight
 
-$nV1 = [-2, -1 ,1]
-$nV2 = [-1, -2 ,1]
-$nV3 = [1, -2 ,1]
-$nV4 = [2, -1 ,1]
-$nV5 = [-2, 1 ,1]
-$nV6 = [-1, 2 ,1]
-$nV7 = [1, 2 ,1]
-$nV8 = [2, 1 ,1]
+$N1 = [-2, -1 ,1]
+$N2 = [-1, -2 ,1]
+$N3 = [1, -2 ,1]
+$N4 = [2, -1 ,1]
+$N5 = [-2, 1 ,1]
+$N6 = [-1, 2 ,1]
+$N7 = [1, 2 ,1]
+$N8 = [2, 1 ,1]
 
-N.does(nV1, ~, ~)
-N.does(nV2, ~, ~)
-N.does(nV3, ~, ~)
-N.does(nV4, ~, ~)
-N.does(nV5, ~, ~)
-N.does(nV6, ~, ~)
-N.does(nV7, ~, ~)
-N.does(nV8, ~, ~)
+N.does(N1, ~, ~)
+N.does(N2, ~, ~)
+N.does(N3, ~, ~)
+N.does(N4, ~, ~)
+N.does(N5, ~, ~)
+N.does(N6, ~, ~)
+N.does(N7, ~, ~)
+N.does(N8, ~, ~)
 
 //Bishop
 
-$bV1 = [-1, -1 ,-1]
-$bV2 = [-1, 1 ,-1]
-$bV3 = [1, -1 ,-1]
-$bV4 = [1, 1 ,-1]
+$B1 = [-1, -1 ,-1]
+$B2 = [-1, 1 ,-1]
+$B3 = [1, -1 ,-1]
+$B4 = [1, 1 ,-1]
 
-B.does(bV1, ~, ~)
-B.does(bV2, ~, ~)
-B.does(bV3, ~, ~)
-B.does(bV4, ~, ~)
+B.does(B1, ~, ~)
+B.does(B2, ~, ~)
+B.does(B3, ~, ~)
+B.does(B4, ~, ~)
 
 //Rook
 
-$rV1 = [0, 1 ,-1]
-$rV2 = [0, -1 ,-1]
-$rV3 = [1, 0 ,-1]
-$rV4 = [-1, 0 ,-1]
+$R1 = [0, 1 ,-1]
+$R2 = [0, -1 ,-1]
+$R3 = [1, 0 ,-1]
+$R4 = [-1, 0 ,-1]
 
-R.does(rV1, ~, ~)
-R.does(rV2, ~, ~)
-R.does(rV3, ~, ~)
-R.does(rV4, ~, ~)
+R.does(R1, ~, ~)
+R.does(R2, ~, ~)
+R.does(R3, ~, ~)
+R.does(R4, ~, ~)
 
 //Queen
 
-Q.does(bV1, ~, ~)
-Q.does(bV2, ~, ~)
-Q.does(bV3, ~, ~)
-Q.does(bV4, ~, ~)
-Q.does(rV1, ~, ~)
-Q.does(rV2, ~, ~)
-Q.does(rV3, ~, ~)
-Q.does(rV4, ~, ~)
+Q.does(B1, ~, ~)
+Q.does(B2, ~, ~)
+Q.does(B3, ~, ~)
+Q.does(B4, ~, ~)
+Q.does(R1, ~, ~)
+Q.does(R2, ~, ~)
+Q.does(R3, ~, ~)
+Q.does(R4, ~, ~)
 
 //King
 
-$kV1 = [-1, -1 ,1]
-$kV2 = [-1, 1 ,1]
-$kV3 = [1, -1 ,1]
-$kV4 = [1, 1 ,1]
-$kV5 = [0, 1 ,1]
-$kV6 = [0, -1 ,1]
-$kV7 = [1, 0 ,1]
-$kV8 = [-1, 0 ,1]
+$K1 = [-1, -1 ,1]
+$K2 = [-1, 1 ,1]
+$K3 = [1, -1 ,1]
+$K4 = [1, 1 ,1]
+$K5 = [0, 1 ,1]
+$K6 = [0, -1 ,1]
+$K7 = [1, 0 ,1]
+$K8 = [-1, 0 ,1]
 
-K.does(kV1, ~, ~)
-K.does(kV2, ~, ~)
-K.does(kV3, ~, ~)
-K.does(kV4, ~, ~)
-K.does(kV5, ~, ~)
-K.does(kV6, ~, ~)
-K.does(kV7, ~, ~)
-K.does(kV8, ~, ~)
+K.does(K1, ~, ~)
+K.does(K2, ~, ~)
+K.does(K3, ~, ~)
+K.does(K4, ~, ~)
+K.does(K5, ~, ~)
+K.does(K6, ~, ~)
+K.does(K7, ~, ~)
+K.does(K8, ~, ~)
 
 //Pawns
 
-$pV1 = [0, 1, 1]
-$pV2 = [0, 2, 1]
-$pV3 = [-1, 1, 1]
-$pV4 = [1, 1, 1]
+$P1 = [0, 1, 1]
+$P2 = [0, 2, 1]
+$P3 = [-1, 1, 1]
+$P4 = [1, 1, 1]
 
-$PV1 = [0, -1, 1]
-$PV2 = [0, -2, 1]
-$PV3 = [-1, -1, 1]
-$PV4 = [1, -1, 1]
+$P1b = [0, -1, 1]
+$P2b = [0, -2, 1]
+$P3b = [-1, -1, 1]
+$P4b = [1, -1, 1]
 
-!pP1 = [TIMES_MOVED, 0];
+!first = [TIMES_MOVED, 0];
 
-#pFC1 = (~, ~, </, pP1>)
-#pFC2 = (<-, pV3>, ~, ~)
-#pFC3 = (<-, pV4>, ~, ~)
-#pIC1 = (~, <*, pV1>, ~)
-#pIC2 = (~, <*, pV2>, ~)
+#PFC = (~, ~, </, first>)
 
-P.onlyDoes(pV1, ~, pIC1)
-P.onlyDoes(pV2, pFC1, pIC1)
-P.onlyDoes(pV2, ~, pIC2)
-P.onlyDoes(pV3, pFC2, ~)
-P.onlyDoes(pV4, pFC3, ~)
+#PIC1 = (~, <*, P1>, ~)
+#PIC2 = (~, <*, P2>, ~)
+#PCL  = (~, <-, P3>, ~)
+#PCR  = (~, <-, P4>, ~)
+
+P.onlyDoes(P1, ~, PIC1)
+P.onlyDoes(P2, PFC, PIC1)
+P.onlyDoes(P2, ~, PIC2)
+P.onlyDoes(P3, PCL, ~)
+P.onlyDoes(P4, PCR, ~)
 
 
-#PIC1 = (~, <*, PV1>, ~)
-#PIC2 = (~, <*, PV2>, ~)
-#PFC2 = (<-, PV3>, ~, ~)
-#PFC3 = (<-, PV4>, ~, ~)
+#PIC1b = (~, <*, P1b>, ~)
+#PIC2b = (~, <*, P2b>, ~)
+#PCLb  = (~, <-, P3b>, ~)
+#PCRb  = (~, <-, P4b>, ~)
 
-p.onlyDoes(PV1, ~, PIC1)
-p.onlyDoes(PV2, pFC1, PIC1)
-p.onlyDoes(PV2, ~, PIC2)
-p.onlyDoes(PV3, PFC2, ~)
-p.onlyDoes(PV4, PFC3, ~)
+p.onlyDoes(P1b, ~, PIC1b)
+p.onlyDoes(P2b, PFC, PIC1b)
+p.onlyDoes(P2b, ~, PIC2b)
+p.onlyDoes(P3b, PCLb, ~)
+p.onlyDoes(P4b, PCRb, ~)

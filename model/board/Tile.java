@@ -17,4 +17,14 @@ public class Tile {
     public Piece getPiece() {
         return piece;
     }
+
+    public Piece pickUpPiece() {
+        Piece p = piece;
+        piece = null;
+        return p;
+    }
+
+    public void placePiece(Piece p) {
+        piece = p;
+    }
 }
