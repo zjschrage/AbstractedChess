@@ -97,21 +97,25 @@ $PV4 = [1, -1, 1]
 !pP1 = [TIMES_MOVED, 0];
 
 #pFC1 = (~, ~, </, pP1>)
+#pFC2 = (<-, pV3>, ~, ~)
+#pFC3 = (<-, pV4>, ~, ~)
 #pIC1 = (~, <*, pV1>, ~)
 #pIC2 = (~, <*, pV2>, ~)
 
 P.onlyDoes(pV1, ~, pIC1)
 P.onlyDoes(pV2, pFC1, pIC1)
 P.onlyDoes(pV2, ~, pIC2)
-P.onlyDoes(pV3, <-, pV3>, ~)
-P.onlyDoes(pV4, <-, pV4>, ~)
+P.onlyDoes(pV3, pFC2, ~)
+P.onlyDoes(pV4, pFC3, ~)
 
 
 #PIC1 = (~, <*, PV1>, ~)
 #PIC2 = (~, <*, PV2>, ~)
+#PFC2 = (<-, PV3>, ~, ~)
+#PFC3 = (<-, PV4>, ~, ~)
 
 p.onlyDoes(PV1, ~, PIC1)
 p.onlyDoes(PV2, pFC1, PIC1)
 p.onlyDoes(PV2, ~, PIC2)
-p.onlyDoes(PV3, <-, PV3>, ~)
-p.onlyDoes(PV4, <-, PV4>, ~)
+p.onlyDoes(PV3, PFC2, ~)
+p.onlyDoes(PV4, PFC3, ~)
