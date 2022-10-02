@@ -21,32 +21,6 @@ public class Launcher {
         b.printBoard();
 
         PlayManager pm = new PlayManager(b);
-        // pm.move(new Coordinate(0,0), new Coordinate(0,2));
-        // b.printBoard();
-
-        // pm.move(new Coordinate(0,2), new Coordinate(0,3));
-        // b.printBoard();
-
-        // pm.move(new Coordinate(5,7), new Coordinate(4,6));
-        // b.printBoard();
-
-        // pm.move(new Coordinate(2,1), new Coordinate(2,3));
-        // b.printBoard();
-
-        // pm.move(new Coordinate(1,6), new Coordinate(1,4));
-        // b.printBoard();
-
-        // for (int i = 0; i < 8; i++) {
-        //     for (int j = 0; j < 8; j++) {
-        //         Piece p = b.getBoard().get(new Coordinate(j,i)).getPiece();
-        //         if (p == null) continue;
-        //         if (p.getTID().playerId == Player.WHITE) System.out.print((char)p.getTID().id);
-        //         else System.out.print((char)(p.getTID().id + 32));
-        //         System.out.println(":\n");
-        //         b.printBoard(p);
-        //     }
-        // }
-
         Scanner scan = new Scanner(System.in);
         boolean run = true;
         while(run) {

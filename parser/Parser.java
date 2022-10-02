@@ -157,17 +157,18 @@ public class Parser {
     private <T> Optional<SimpleEntry<PieceType, T>> parseConditionEntry(String args, Map<String, T> table) {
         Optional<String[]> conditionArgs = parseCondition(args);
         if (!conditionArgs.isPresent()) return Optional.empty();
-        char key = conditionArgs.get()[0].charAt(0);
+        String key = conditionArgs.get()[0].trim();
         String value = conditionArgs.get()[1].trim();
         return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), table.get(value)));
     }
 
-    private PieceType determinePieceType(char token) {
-        if (token == ANY) return new PieceType(0, true, false, false, false);
-        if (token == FRIEND) return new PieceType(0, false, true, false, false);
-        if (token == ENEMY) return new PieceType(0, false, false, true, false);
-        if (token == SELF) return new PieceType(0, false, false, false, true);
-        return new PieceType(0, false, false, false, false);
+    private PieceType determinePieceType(String token) {
+        if (token.charAt(0) == ANY) return new PieceType(0, true, false, false, false, null);
+        if (token.charAt(0) == FRIEND) return new PieceType(0, false, true, false, false, null);
+        if (token.charAt(0) == ENEMY) return new PieceType(0, false, false, true, false, null);
+        if (token.charAt(0) == SELF) return new PieceType(0, false, false, false, true, null);
+        if (vectorTable.containsKey(token)) return new PieceType(0, false, false, false, false, vectorTable.get(token));
+        return new PieceType(0, false, false, false, false, null);
     }
 
     private void propertyDeclaration(String line) {

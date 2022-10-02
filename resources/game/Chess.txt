@@ -5,7 +5,7 @@
 %Q
 %K
 
-?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
+?rnbqkbnr/pp3pp1/8/8/8/8/2P1P1P1/RNBQKBNR
 
 //Knight
 
@@ -72,6 +72,16 @@ $K5 = [0, 1 ,1]
 $K6 = [0, -1 ,1]
 $K7 = [1, 0 ,1]
 $K8 = [-1, 0 ,1]
+$K9 = [-2, 0 ,1]
+$K10 = [2, 0 ,1]
+
+!first = [TIMES_MOVED, 0];
+#FirstCond = (~, ~, </, first>)
+
+$LR = [-4, 0, 1]
+$RR = [3, 0, 1]
+#LRCastle = (~, ~, <LR, first>)
+#RRCastle = (~, ~, <RR, first>)
 
 K.does(K1, ~, ~)
 K.does(K2, ~, ~)
@@ -81,6 +91,12 @@ K.does(K5, ~, ~)
 K.does(K6, ~, ~)
 K.does(K7, ~, ~)
 K.does(K8, ~, ~)
+K.does(K9, FirstCond, ~)
+K.does(K9, LRCastle, ~)
+//K.action(K9, )
+K.does(K10, FirstCond, ~)
+K.does(K10, RRCastle, ~)
+//K.action(K10, )
 
 //Pawns
 
@@ -94,17 +110,13 @@ $P2b = [0, -2, 1]
 $P3b = [-1, -1, 1]
 $P4b = [1, -1, 1]
 
-!first = [TIMES_MOVED, 0];
-
-#PFC = (~, ~, </, first>)
-
 #PIC1 = (~, <*, P1>, ~)
 #PIC2 = (~, <*, P2>, ~)
 #PCL  = (~, <-, P3>, ~)
 #PCR  = (~, <-, P4>, ~)
 
 P.onlyDoes(P1, ~, PIC1)
-P.onlyDoes(P2, PFC, PIC1)
+P.onlyDoes(P2, FirstCond, PIC1)
 P.onlyDoes(P2, ~, PIC2)
 P.onlyDoes(P3, PCL, ~)
 P.onlyDoes(P4, PCR, ~)
@@ -120,3 +132,23 @@ p.onlyDoes(P2b, PFC, PIC1b)
 p.onlyDoes(P2b, ~, PIC2b)
 p.onlyDoes(P3b, PCLb, ~)
 p.onlyDoes(P4b, PCRb, ~)
+
+//En Passant
+
+!movedLast = [TURNS_AGO_MOVED, 1];
+
+$L = [-1, 0, 1]
+$R = [1, 0, 1]
+#PLep = (~, ~, <L, movedLast>)
+#PRep = (~, ~, <R, movedLast>)
+
+$PLep = [-1, 1, 1]
+$PRep = [1, 1, 1]
+$PLepb = [-1, 1, 1]
+$PRepb = [1, 1, 1]
+
+P.onlyDoes(PLep, PLep, ~)
+P.onlyDoes(PRep, PRep, ~)
+p.onlyDoes(PLepb, PLep, ~)
+p.onlyDoes(PRepb, PRep, ~)
+

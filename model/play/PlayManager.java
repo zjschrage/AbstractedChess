@@ -8,7 +8,7 @@ import model.piece.Player;
 public class PlayManager {
     
     private Board board;
-    private int turn;
+    public static int turn;
 
     public PlayManager(Board board) {
         this.board = board;
@@ -39,4 +39,5 @@ public class PlayManager {
         //Piece in new position allows a check -> return false
         return true;
     }
+
 }

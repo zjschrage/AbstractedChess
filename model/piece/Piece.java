@@ -39,11 +39,11 @@ public class Piece {
         lastTurnNumberMoved = -1;
     }
 
-    public void init(Player playerId, Set<MovementPattern> movementPattern, Map<MovementPattern, Condition> fulfillCond,  Map<MovementPattern, Condition> inhibitoryCond, Coordinate coordinate) {
-        this.behavior.getTID().playerId = playerId;
-        this.behavior.setBehavior(movementPattern, fulfillCond, inhibitoryCond);
-        this.coordinate = coordinate;
-    }
+    // public void init(Player playerId, Set<MovementPattern> movementPattern, Map<MovementPattern, Condition> fulfillCond,  Map<MovementPattern, Condition> inhibitoryCond, Coordinate coordinate) {
+    //     this.behavior.getTID().playerId = playerId;
+    //     this.behavior.setBehavior(movementPattern, fulfillCond, inhibitoryCond);
+    //     this.coordinate = coordinate;
+    // }
 
     public List<Coordinate> getFeasableMoves(Board board) {
         List<Coordinate> feasableMoves = new ArrayList<>();
@@ -85,11 +85,19 @@ public class Piece {
         return lastTurnNumberMoved;
     }
 
-    private boolean verifyConditions(Condition fulfillCond, Condition inhibitoryCond, Coordinate c, Board b) {
+    private boolean verifyConditions(List<Condition> fulfillCond, List<Condition> inhibitoryCond, Coordinate c, Board b) {
         boolean fCond = true;
         boolean iCond = false;
-        if (fulfillCond != null) fCond = fulfillCond.verifyCondition(getTID(), c, b, ConditionType.FULFILL);
-        if (inhibitoryCond != null) iCond = inhibitoryCond.verifyCondition(getTID(), c, b, ConditionType.INHIBIT);
+        if (fulfillCond != null) {
+            for (Condition cond : fulfillCond) {
+                fCond &= cond.verifyCondition(getTID(), c, b, ConditionType.FULFILL);
+            }
+        }
+        if (inhibitoryCond != null) {
+            for (Condition cond : inhibitoryCond) {
+                iCond |= cond.verifyCondition(getTID(), c, b, ConditionType.INHIBIT);
+            }
+        }
         return !(fCond && !iCond);
     }
 

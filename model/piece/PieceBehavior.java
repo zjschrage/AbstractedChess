@@ -1,7 +1,9 @@
 package model.piece;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,8 +14,8 @@ public class PieceBehavior {
 
     private PieceTypeID TID;
     private Set<MovementPattern> movementPattern;
-    private Map<MovementPattern, Condition> fulfillCond;
-    private Map<MovementPattern, Condition> inhibitoryCond;
+    private Map<MovementPattern, List<Condition>> fulfillCond;
+    private Map<MovementPattern, List<Condition>> inhibitoryCond;
 
     public PieceBehavior(PieceTypeID TID) {
         this.TID = TID;
@@ -22,7 +24,7 @@ public class PieceBehavior {
         this.inhibitoryCond = new HashMap<>();
     }
 
-    public void setBehavior(Set<MovementPattern> movementPattern, Map<MovementPattern, Condition> fulfillCond, Map<MovementPattern, Condition> inhibitoryCond) {
+    public void setBehavior(Set<MovementPattern> movementPattern, Map<MovementPattern, List<Condition>> fulfillCond, Map<MovementPattern, List<Condition>> inhibitoryCond) {
         this.movementPattern = movementPattern;
         this.fulfillCond = fulfillCond;
         this.inhibitoryCond = inhibitoryCond;
@@ -33,11 +35,15 @@ public class PieceBehavior {
     }
 
     public void addFulfillCond(MovementPattern mp, Condition c) {
-        fulfillCond.put(mp, c);
+        List<Condition> cs = fulfillCond.get(mp);
+        if (cs == null) fulfillCond.put(mp, new ArrayList<>());
+        fulfillCond.get(mp).add(c);
     }
 
     public void addInhibitoryCond(MovementPattern mp, Condition c) {
-        inhibitoryCond.put(mp, c);
+        List<Condition> cs = inhibitoryCond.get(mp);
+        if (cs == null) inhibitoryCond.put(mp, new ArrayList<>());
+        inhibitoryCond.get(mp).add(c);
     }
 
     public PieceTypeID getTID() {
@@ -48,11 +54,11 @@ public class PieceBehavior {
         return movementPattern;
     }
 
-    public Map<MovementPattern, Condition> getFulfillCond() {
+    public Map<MovementPattern, List<Condition>> getFulfillCond() {
         return fulfillCond;
     }
 
-    public Map<MovementPattern, Condition> getInhibitoryCond() {
+    public Map<MovementPattern, List<Condition>> getInhibitoryCond() {
         return inhibitoryCond;
     }
     

@@ -103,6 +103,7 @@ public class Condition {
     private boolean verifyPropertyCondition(PieceTypeID pt, Coordinate c, Board b, ConditionType t) {
         boolean retVal = (t == ConditionType.FULFILL);
         for (PieceType p : propertyCondition.keySet()) {
+            if (p.relativeNeighbor != null) c = new Coordinate(c.x() + p.relativeNeighbor.xVector(), c.y() + p.relativeNeighbor.yVector());
             if (propertyCondition.get(p).verifyProperty(c, b)) {
                 if (retVal) continue;
                 else return true;
