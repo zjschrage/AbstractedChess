@@ -10,19 +10,19 @@ public class PieceType {
     public boolean friendly;                  // +
     public boolean enemy;                     // -
     public boolean selfInstance;              // / (use for reflexively checking properties)  
-    public MovementPattern relativeNeighbor;  // (check neighbors properties)
+    public MovementPattern relativeNeighbor;  // (check neighbors properties, NOT checking own properties)
 
-    public PieceType(int type, boolean all, boolean friendly, boolean enemy, boolean selfInstance, MovementPattern relativeNeighbor) {
-        this.type = type;
-        this.all = all;
-        this.friendly = friendly;
-        this.enemy = enemy;
-        this.selfInstance = selfInstance;
-        this.relativeNeighbor = relativeNeighbor;
+    public PieceType() {
+        this.type = 0;
+        this.all = false;
+        this.friendly = false;
+        this.enemy = false;
+        this.selfInstance = false;
+        this.relativeNeighbor = null;
     }
 
     public String toString() {
-        return "[" + type + " " + all + " " + friendly + " " + enemy + " " + selfInstance + " " + relativeNeighbor + "]";
+        return String.format("[type=%d, all=%b, friendly=%b, enemy= %b, self= %b, neighbor=%v]", type, all, friendly, enemy, selfInstance, relativeNeighbor);
     }
 
      

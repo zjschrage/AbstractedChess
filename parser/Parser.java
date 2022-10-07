@@ -163,12 +163,14 @@ public class Parser {
     }
 
     private PieceType determinePieceType(String token) {
-        if (token.charAt(0) == ANY) return new PieceType(0, true, false, false, false, null);
-        if (token.charAt(0) == FRIEND) return new PieceType(0, false, true, false, false, null);
-        if (token.charAt(0) == ENEMY) return new PieceType(0, false, false, true, false, null);
-        if (token.charAt(0) == SELF) return new PieceType(0, false, false, false, true, null);
-        if (vectorTable.containsKey(token)) return new PieceType(0, false, false, false, false, vectorTable.get(token));
-        return new PieceType(0, false, false, false, false, null);
+        PieceType p = new PieceType();
+        if (token.charAt(0) == ANY) p.all = true;
+        if (token.charAt(0) == FRIEND) p.friendly = true;
+        if (token.charAt(0) == ENEMY) p.enemy = true;
+        if (token.charAt(0) == SELF) p.selfInstance = true;
+        if (vectorTable.containsKey(token)) p.relativeNeighbor = vectorTable.get(token);
+        if (vectorTable.containsKey(token.substring(1))) p.relativeNeighbor = vectorTable.get(token.substring(1));
+        return p;
     }
 
     private void propertyDeclaration(String line) {

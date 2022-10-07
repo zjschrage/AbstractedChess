@@ -24,4 +24,8 @@ public class MovementPattern {
         return repetitions;
     }
 
+    public String toString() {
+        return String.format("[x=%d, y=%d, r=%d]", xVector, yVector, repetitions);
+    }
+
 }

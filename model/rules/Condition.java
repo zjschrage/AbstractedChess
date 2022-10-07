@@ -33,87 +33,41 @@ public class Condition {
         this.propertyCondition.put(propertyCondition.getKey(), propertyCondition.getValue());
     }
 
-    public boolean verifyCondition(PieceTypeID pt, Coordinate c, Board b, ConditionType t) {
-        if (t == ConditionType.FULFILL) return verifyAbsoluteCondition(pt, b, t) && verifyRelativeCondition(pt, c, b, t) && verifyPropertyCondition(pt, c, b, t);
-        else return verifyAbsoluteCondition(pt, b, t) || verifyRelativeCondition(pt, c, b, t) || verifyPropertyCondition(pt, c, b, t);
+    public boolean verifyCondition(PieceTypeID pt, Coordinate c, Board b) {
+        return verifyAbsoluteCondition(pt, b) || verifyRelativeCondition(pt, c, b) || verifyPropertyCondition(pt, c, b);
     }
 
-    private boolean verifyAbsoluteCondition(PieceTypeID pt, Board b, ConditionType t) {
-        boolean retVal = (t == ConditionType.FULFILL);
+    private boolean verifyAbsoluteCondition(PieceTypeID pt, Board b) {
         for (PieceType p : absoluteCondition.keySet()) {
             Tile tile = b.getBoard().get(absoluteCondition.get(p));
-            if (tile == null || tile.getPiece() == null) {
-                if (!retVal) continue;
-                else return false;
-            }
-            if (p.all) {
-                if (retVal) continue;
-                else return true;
-            }
-            else if (p.friendly && tile.getPiece().getTID().playerId == pt.playerId) {
-                if (retVal) continue;
-                else return true;
-            }
-            else if (p.enemy && tile.getPiece().getTID().playerId != pt.playerId) {
-                if (retVal) continue;
-                else return true;
-            }
-            else if (tile.getPiece().getTID().id == p.type) {
-                if (retVal) continue;
-                else return true;
-            }
+            if (tile == null || tile.getPiece() == null) return false;
+            if (p.all) return true;
+            if (p.friendly && tile.getPiece().getTID().playerId == pt.playerId) return true;
+            if (p.enemy && tile.getPiece().getTID().playerId != pt.playerId) return true;
+            if (tile.getPiece().getTID().id == p.type) return true;
         }
-        return retVal;
+        return false;
     }
 
-    private boolean verifyRelativeCondition(PieceTypeID pt, Coordinate c, Board b, ConditionType t) {
-        boolean retVal = (t == ConditionType.FULFILL);
+    private boolean verifyRelativeCondition(PieceTypeID pt, Coordinate c, Board b) {
         for (PieceType p : relativeCondition.keySet()) {
             MovementPattern relVec = relativeCondition.get(p);
             Coordinate relPos = new Coordinate(c.x() + relVec.xVector(), c.y() + relVec.yVector());
             Tile tile = b.getBoard().get(relPos);
-            if (tile == null || tile.getPiece() == null) {
-                if (!retVal) continue;
-                else return false;
-            }
-            if (p.all) {
-                if (retVal) continue;
-                else return true;
-            }
-            else if (p.friendly && tile.getPiece().getTID().playerId == pt.playerId) {
-                if (retVal) continue;
-                else return true;
-            }
-            else if (p.enemy && tile.getPiece().getTID().playerId != pt.playerId) {
-                if (retVal) continue;
-                else return true;
-            }
-            else if (tile.getPiece().getTID().id == p.type) {
-                if (retVal) continue;
-                else return true;
-            }
-            else {
-                if (retVal) return false;
-                else continue;
-            }
+            if (tile == null || tile.getPiece() == null) return false;
+            if (p.all) return true;
+            if (p.friendly && tile.getPiece().getTID().playerId == pt.playerId) return true;
+            if (p.enemy && tile.getPiece().getTID().playerId != pt.playerId) return true;
+            if (tile.getPiece().getTID().id == p.type) return true;
         }
-        return retVal;
+        return false;
     }
 
-    private boolean verifyPropertyCondition(PieceTypeID pt, Coordinate c, Board b, ConditionType t) {
-        boolean retVal = (t == ConditionType.FULFILL);
+    private boolean verifyPropertyCondition(PieceTypeID pt, Coordinate c, Board b) {
         for (PieceType p : propertyCondition.keySet()) {
-            if (p.relativeNeighbor != null) c = new Coordinate(c.x() + p.relativeNeighbor.xVector(), c.y() + p.relativeNeighbor.yVector());
-            if (propertyCondition.get(p).verifyProperty(c, b)) {
-                if (retVal) continue;
-                else return true;
-            }
-            else {
-                if (retVal) return false;
-                else continue;
-            }
+            if (propertyCondition.get(p).verifyProperty(p, c, b)) return true;
         }
-        return retVal;
+        return false;
     }
 
     public void print() {

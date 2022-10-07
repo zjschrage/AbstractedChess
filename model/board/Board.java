@@ -6,7 +6,6 @@ import java.util.Map;
 
 import model.piece.Piece;
 import model.piece.Player;
-import model.rules.Action;
 
 public class Board {
 

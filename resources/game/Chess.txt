@@ -5,7 +5,7 @@
 %Q
 %K
 
-?rnbqkbnr/pp3pp1/8/8/8/8/2P1P1P1/RNBQKBNR
+?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R2QK2R
 
 //Knight
 
@@ -83,6 +83,16 @@ $RR = [3, 0, 1]
 #LRCastle = (~, ~, <LR, first>)
 #RRCastle = (~, ~, <RR, first>)
 
+$KL1 = [-1, 0, 1]
+$KL2 = [-2, 0, 1]
+$KR1 = [1, 0, 1]
+$KR2 = [2, 0, 1]
+
+#KIC1 = (~, <*, KL1>, ~)
+#KIC2 = (~, <*, KL2>, ~)
+#KIC3 = (~, <*, KR1>, ~)
+#KIC4 = (~, <*, KR2>, ~)
+
 K.does(K1, ~, ~)
 K.does(K2, ~, ~)
 K.does(K3, ~, ~)
@@ -91,12 +101,18 @@ K.does(K5, ~, ~)
 K.does(K6, ~, ~)
 K.does(K7, ~, ~)
 K.does(K8, ~, ~)
+
 K.does(K9, FirstCond, ~)
 K.does(K9, LRCastle, ~)
-//K.action(K9, )
+K.does(K9, ~, KIC1)
+K.does(K9, ~, KIC2)
+//K.action(K9, ) //Move rook
+
 K.does(K10, FirstCond, ~)
 K.does(K10, RRCastle, ~)
-//K.action(K10, )
+K.does(K10, ~, KIC3)
+K.does(K10, ~, KIC4)
+//K.action(K10, ) //Move rook
 
 //Pawns
 
@@ -118,6 +134,7 @@ $P4b = [1, -1, 1]
 P.onlyDoes(P1, ~, PIC1)
 P.onlyDoes(P2, FirstCond, PIC1)
 P.onlyDoes(P2, ~, PIC2)
+//P.onlyAction(P2, ) //Set a flag active for 1 move
 P.onlyDoes(P3, PCL, ~)
 P.onlyDoes(P4, PCR, ~)
 
@@ -128,27 +145,30 @@ P.onlyDoes(P4, PCR, ~)
 #PCRb  = (~, <-, P4b>, ~)
 
 p.onlyDoes(P1b, ~, PIC1b)
-p.onlyDoes(P2b, PFC, PIC1b)
+p.onlyDoes(P2b, FirstCond, PIC1b)
 p.onlyDoes(P2b, ~, PIC2b)
+//p.onlyAction(P2b, ) //Set a flag active for 1 move
 p.onlyDoes(P3b, PCLb, ~)
 p.onlyDoes(P4b, PCRb, ~)
 
 //En Passant
 
-!movedLast = [TURNS_AGO_MOVED, 1];
+!enPassantFlag = [CHECK_FLAG, 0, 1]
 
 $L = [-1, 0, 1]
 $R = [1, 0, 1]
-#PLep = (~, ~, <L, movedLast>)
-#PRep = (~, ~, <R, movedLast>)
+#PLep = (~, ~, <-L, enPassantFlag>)
+#PRep = (~, ~, <-R, enPassantFlag>)
 
 $PLep = [-1, 1, 1]
 $PRep = [1, 1, 1]
-$PLepb = [-1, 1, 1]
-$PRepb = [1, 1, 1]
-
 P.onlyDoes(PLep, PLep, ~)
 P.onlyDoes(PRep, PRep, ~)
+//P.onlyAction() //Remove captured pawn
+
+$PLepb = [-1, -1, 1]
+$PRepb = [1, -1, 1]
 p.onlyDoes(PLepb, PLep, ~)
 p.onlyDoes(PRepb, PRep, ~)
+//p.onlyAction() //Remove captured pawn
 
