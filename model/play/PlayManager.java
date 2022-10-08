@@ -6,17 +6,22 @@ import model.piece.Piece;
 import model.piece.Player;
 
 public class PlayManager {
+
+    //Global Turn Variable
+    public static int turn;
     
     private Board board;
-    public static int turn;
+    private MoveNotation moveNotator;
 
     public PlayManager(Board board) {
-        this.board = board;
         turn = 0;
+        this.board = board;
+        this.moveNotator = new MoveNotation(board);
     }
 
     public void move(String notation) {
-        
+        Move mv = moveNotator.translateNotation(notation);
+        if (mv != null) move(mv.src(), mv.dst());
     }
 
     public void move(Coordinate from, Coordinate to) {
@@ -26,6 +31,10 @@ public class PlayManager {
             p.updateStatistics(to, turn);
             turn++;
         }
+    }
+
+    public Coordinate translateCoordinate(String notation) {
+        return moveNotator.translateCoordinate(notation);
     }
 
     private boolean verifyOrder(Piece p) {

@@ -61,6 +61,10 @@ public class Piece {
         lastTurnNumberMoved = turn;
     }
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
     public int getTimesMoved() {
         return timesMoved;
     }

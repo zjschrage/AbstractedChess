@@ -1,11 +1,11 @@
-%P
+%P:[]
 %N
 %B
 %R
 %Q
 %K
 
-?rnbqkbnr/pppppppp/8/8/8/8/8/R2QK2R
+?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
 //Knight
 

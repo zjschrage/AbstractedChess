@@ -3,16 +3,15 @@ package model.board;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import model.piece.Piece;
-import model.piece.Player;
 import model.rules.Action;
 
 public class Board {
 
     private Map<Coordinate, Tile> board;
     private Dimension dimension;
+    private BoardPrinter boardPrinter;
 
     public Board() {
         board = new HashMap<Coordinate, Tile>();
@@ -28,42 +27,7 @@ public class Board {
         for (Piece p : pieces.keySet()) {
             board.put(pieces.get(p), new Tile(p));
         }
-    }
-
-    public void printBoard() {
-        for (int i = dimension.y() - 1; i >= 0; i--) {
-            for (int j = 0; j < dimension.x(); j++) {
-                Piece p = board.get(new Coordinate(j, i)).getPiece();
-                if (p != null) {
-                    if (p.getTID().playerId == Player.WHITE) System.out.print((char)p.getTID().id + " ");
-                    else System.out.print((char)(p.getTID().id + 32) + " ");
-                }
-                else System.out.print("_ ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    public void printBoard(Piece piece) {
-        Set<Coordinate> fm = piece.getFeasableMoves(this).keySet();
-        for (int i = dimension.y() - 1; i >= 0; i--) {
-            for (int j = 0; j < dimension.x(); j++) {
-                Coordinate c = new Coordinate(j, i);
-                if (fm.contains(c)) {
-                    System.out.print("* ");
-                    continue;
-                }
-                Piece p = board.get(c).getPiece();
-                if (p != null) {
-                    if (p.getTID().playerId == Player.WHITE) System.out.print((char)p.getTID().id + " ");
-                    else System.out.print((char)(p.getTID().id + 32) + " ");
-                }
-                else System.out.print("_ ");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        boardPrinter = new BoardPrinter(board, dimension);
     }
 
     public Map<Coordinate, Tile> getBoard() {
@@ -85,5 +49,13 @@ public class Board {
             a.execute(to, this);
         }
         return true;
+    }
+
+    public void print() {
+        boardPrinter.printBoard();
+    }
+
+    public void print(Piece piece) {
+        boardPrinter.printBoard(piece, this);
     }
 }

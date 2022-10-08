@@ -101,8 +101,9 @@ public class Parser {
 
     private void pieceDeclaration(String line) {
         char piece = line.charAt(line.indexOf(PIECE_DECLARATOR) + 1);
-        pieceTable.put(piece, new PieceBehavior(new PieceTypeID(Player.WHITE, (int)piece)));
-        pieceTable.put((char)(piece + ASCII_CASE_OFFSET), new PieceBehavior(new PieceTypeID(Player.BLACK, (int)piece)));
+        char symbol = getSymbol(line, piece);
+        pieceTable.put(piece, new PieceBehavior(new PieceTypeID(Player.WHITE, (int)piece, symbol)));
+        pieceTable.put((char)(piece + ASCII_CASE_OFFSET), new PieceBehavior(new PieceTypeID(Player.BLACK, (int)piece, symbol)));
     }
 
     private void layout(String line) {
@@ -139,6 +140,22 @@ public class Parser {
         if (absoluteCondition.isPresent()) conditionTable.get(conditionSymbol).addAbsoluteCondition(absoluteCondition.get());
         if (relativeCondition.isPresent()) conditionTable.get(conditionSymbol).addRelativeCondition(relativeCondition.get());
         if (propertyCondition.isPresent()) conditionTable.get(conditionSymbol).addPropertyCondition(propertyCondition.get());
+    }
+
+    private void propertyDeclaration(String line) {
+        int declaration = line.indexOf(PROPERTY_DECLARATOR) + 1;
+        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
+        String propertySymbol = line.substring(declaration, operator).trim();
+        String[] args = getArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
+        propertyTable.put(propertySymbol, new Property(PropertyType.valueOf(args[0]), propertiesLister(args)));
+    }
+
+    private void actionDeclaration(String line) {
+        int declaration = line.indexOf(ACTION_DECLARATOR) + 1;
+        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
+        String actionSymbol = line.substring(declaration, operator).trim();
+        Object[] args = getObjectArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
+        actionTable.put(actionSymbol, new Action(ActionType.valueOf(((String)args[0]).trim()), propertiesLister(args)));
     }
 
     private String[] reconstructedArgs(String[] args) {
@@ -181,20 +198,16 @@ public class Parser {
         return p;
     }
 
-    private void propertyDeclaration(String line) {
-        int declaration = line.indexOf(PROPERTY_DECLARATOR) + 1;
-        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
-        String propertySymbol = line.substring(declaration, operator).trim();
-        String[] args = getArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
-        propertyTable.put(propertySymbol, new Property(PropertyType.valueOf(args[0]), propertiesLister(args)));
-    }
-
-    private void actionDeclaration(String line) {
-        int declaration = line.indexOf(ACTION_DECLARATOR) + 1;
-        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
-        String actionSymbol = line.substring(declaration, operator).trim();
-        Object[] args = getObjectArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
-        actionTable.put(actionSymbol, new Action(ActionType.valueOf(((String)args[0]).trim()), propertiesLister(args)));
+    private char getSymbol(String line, Character piece) {
+        char symbol = '\0';
+        if (line.indexOf(":") >= 0) {
+            String[] args = getArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
+            if (args[0].length() > 0) symbol = args[0].charAt(0);
+        }
+        else {
+            symbol = piece;
+        }
+        return symbol;
     }
 
     private void bothDoes(String line) {
