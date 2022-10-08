@@ -5,7 +5,7 @@
 %Q
 %K
 
-?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
+?rnbqkbnr/pppppppp/8/8/8/8/8/R2QK2R
 
 //Knight
 
@@ -78,9 +78,6 @@ $K10 = [2, 0 ,1]
 &first = [TIMES_MOVED, 0];
 #FirstCond = (~, ~, </, first>)
 
-!moveLRook = [MOVE, K1, K1];
-!moveRRook = [MOVE, K1, K1];
-
 $LR = [-4, 0, 1]
 $RR = [3, 0, 1]
 #LRCastle = (~, ~, <LR, first>)
@@ -95,6 +92,9 @@ $KR2 = [2, 0, 1]
 #KIC2 = (~, <*, KL2>, ~)
 #KIC3 = (~, <*, KR1>, ~)
 #KIC4 = (~, <*, KR2>, ~)
+
+!moveLRook = [MOVE, KL2, KR1];
+!moveRRook = [MOVE, KR1, KL1];
 
 K.both.does(K1)
 K.both.does(K2)

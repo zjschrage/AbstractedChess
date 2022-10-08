@@ -42,6 +42,7 @@ public class Action {
         Coordinate toCord = new Coordinate(c.x() + to.xVector(), c.y() + to.yVector());
         Piece movPiece = getPiece(fromCord, b);
         if (movPiece == null || !b.checkInBounds(toCord)) return;
+        movPiece.updateStatistics(toCord, PlayManager.turn);
         b.getBoard().get(toCord).placePiece(b.getBoard().get(fromCord).pickUpPiece());
     }
 
