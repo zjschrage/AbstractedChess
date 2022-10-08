@@ -11,21 +11,39 @@ import model.board.Dimension;
 import model.piece.Piece;
 import model.piece.PieceBehavior;
 
-public class FenParser {
+import static parser.Constants.FEN_DELIMETER;
 
-    public static final Character FEN_DELIMETER = '/';
+public class FenParser {
 
     private Map<Character, PieceBehavior> pieceTable;
 
+    /**
+     * Accepts a mapping of characters representing the user defined piece tokens
+     * to parsed and constructed piece behaviors to be used in piece instantiation.
+     * This lets the parser know which pieces get what behavior when parsing the FEN
+     * @param pieceTable Piece token to behavior mapping
+     */
     public FenParser(Map<Character, PieceBehavior> pieceTable) {
         this.pieceTable = pieceTable;
     }
 
+    /**
+     * Gives the length and width of a board through a Dimension object
+     * by determining the structure of the FEN notation
+     * @param fen String notation for board configuration
+     * @return Dimension object
+     */
     public Dimension getDimensions(String fen) {
         String[] rows = fen.split("" + FEN_DELIMETER);
         return new Dimension(rows.length, getWidth(rows[0]));
     }
 
+    /**
+     * Creates instances of Piece objects and maps them to particular coordinates
+     * from an input FEN notation string
+     * @param fen string notation for board configuration
+     * @return Piece instance to Coordinate mapping for board creation
+     */
     public Map<Piece, Coordinate> configurePieces(String fen) {
         Map<Piece, Coordinate> pieceConfiguration = new HashMap<>();
         String[] rows = fen.split("" + FEN_DELIMETER);

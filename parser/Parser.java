@@ -24,34 +24,9 @@ import model.rules.MovementPattern;
 import model.rules.Property;
 import model.rules.PropertyType;
 
-public class Parser {
+import static parser.Constants.*;
 
-    public static final String DOES = "does";
-    public static final String MUST = "must";
-    public static final String CANNOT = "cannot";
-    public static final String ACTION = "action";
-    public static final String BOTH = "both";
-    public static final Character PIECE_DECLARATOR = '%';
-    public static final Character LAYOUT_DECLARATOR = '?';
-    public static final Character VECTOR_DECLARATOR = '$';
-    public static final Character COORDINATE_DECLARATOR = '@';
-    public static final Character CONDITION_DECLARATOR = '#';
-    public static final Character PROPERTY_DECLARATOR = '&';
-    public static final Character ACTION_DECLARATOR = '!';
-    public static final Character ASSIGNMENT_OPERATOR = '=';
-    public static final Character DOT_OPERATOR = '.';
-    public static final Character LEFT_BRACKET = '[';
-    public static final Character RIGHT_BRACKET = ']';
-    public static final Character LEFT_PAREN = '(';
-    public static final Character RIGHT_PAREN = ')';
-    public static final Character LEFT_CARROT = '<';
-    public static final Character RIGHT_CARROT = '>';
-    public static final Character COMMA = ',';
-    public static final Character ANY = '*';
-    public static final Character FRIEND = '+';
-    public static final Character ENEMY = '-';
-    public static final Character SELF = '/';
-    public static final int ASCII_CASE_OFFSET = 32;
+public class Parser {
 
     private Map<String, SymbolMapper> functionTable;
     private Map<Character, SymbolMapper> symbolTable;
@@ -63,6 +38,12 @@ public class Parser {
     private Map<String, Action> actionTable;
     private String fen;
 
+    /**
+     * The parser reads in a game file outling the pieces, 
+     * piece configuration, piece behavior, and piece side effect actions.
+     * The parser saves the user defined symbols in a table and uses them
+     * to construct the abstract Java representation of the game
+     */
     public Parser() {
         functionTable = new HashMap<>();
         symbolTable = new HashMap<>();
@@ -76,21 +57,33 @@ public class Parser {
         initSymbolTable();
     }
 
-    public Board generateBoard() {
-        Board b = new Board();
-        FenParser f = new FenParser(pieceTable);
-        b.initBoard(f.getDimensions(fen), f.configurePieces(fen));
-        return b;
-    }
-
-    public void loadGameFile() throws IOException {
-        FileReader fr = new FileReader("resources/game/Chess.txt");
+    /**
+     * Loads a game with a specified path and parses line by line
+     * The contents is saved into mapping tables which is used to
+     * construct the game abstract representation
+     * @param path Path of the game file
+     * @throws IOException
+     */
+    public void loadGameFile(String path) throws IOException {
+        FileReader fr = new FileReader(path);
         BufferedReader br = new BufferedReader(fr);
         String line;
         while ((line = br.readLine()) != null) {
             processLine(line);
         }
         br.close();
+    }
+
+    /**
+     * Creates a new Board object with pieces placed on the board
+     * in accordance to the standard FEN notation system
+     * @return Board
+     */
+    public Board generateBoard() {
+        Board b = new Board();
+        FenParser f = new FenParser(pieceTable);
+        b.initBoard(f.getDimensions(fen), f.configurePieces(fen));
+        return b;
     }
 
     private void processLine(String line) {
@@ -199,8 +192,8 @@ public class Parser {
     }
 
     private char getSymbol(String line, Character piece) {
-        char symbol = '\0';
-        if (line.indexOf(":") >= 0) {
+        char symbol = EMPTY_CHARACTER;
+        if (line.indexOf(COLON) >= 0) {
             String[] args = getArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
             if (args[0].length() > 0) symbol = args[0].charAt(0);
         }

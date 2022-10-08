@@ -1,6 +1,5 @@
 package model.play;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Set;
 import model.board.Board;
 import model.board.Coordinate;
 import model.piece.Piece;
-import parser.Parser;
 
 public class MoveNotation {
 
@@ -91,21 +89,6 @@ public class MoveNotation {
 
     private boolean outOfTurn(Piece p) {
         return (PlayManager.turn % 2 != p.getTID().playerId.ordinal());
-    }
-
-    public static void main(String[] args) {
-        Parser parser = new Parser();
-        try {
-            parser.loadGameFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Board b = parser.generateBoard();
-        MoveNotation mover = new MoveNotation(b);
-        String[] moves = {"e4", "e5", "Na3", "Na6", "Nf4", "Kh8", "Ra1"};
-        for (String s : moves) {
-            System.out.println(mover.translateNotation(s));
-        }
     }
 
 }
