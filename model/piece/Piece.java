@@ -1,10 +1,12 @@
 package model.piece;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.board.Board;
 import model.board.Coordinate;
+import model.rules.Action;
 import model.rules.Condition;
 import model.rules.MovementPattern;
 
@@ -17,21 +19,18 @@ public class Piece {
     private Coordinate coordinate;
     private int timesMoved;
     private int lastTurnNumberMoved;
-
-    public Piece() {
-        timesMoved = 0;
-        lastTurnNumberMoved = -1;
-    }
+    private Map<Integer, Flag> flags;
 
     public Piece(PieceBehavior behavior, Coordinate coordinate) {
         this.behavior = behavior;
         this.coordinate = coordinate;
         timesMoved = 0;
         lastTurnNumberMoved = -1;
+        flags = new HashMap<>();
     }
 
-    public List<Coordinate> getFeasableMoves(Board board) {
-        List<Coordinate> feasableMoves = new ArrayList<>();
+    public Map<Coordinate, List<Action>> getFeasableMoves(Board board) {
+        Map<Coordinate, List<Action>> feasableMoves = new HashMap<>();
         for (MovementPattern mp : behavior.getMovementPattern()) {
             if (!verifyConditions(behavior.getFulfillCond().get(mp), behavior.getInhibitoryCond().get(mp), coordinate, board)) continue;
             int xVec = mp.xVector();
@@ -44,7 +43,7 @@ public class Piece {
                 if (!board.checkInBounds(c) || step > rep) break;
                 Piece piece = board.getBoard().get(c).getPiece();
                 if (piece != null && piece.behavior.getTID().playerId == behavior.getTID().playerId) break; //No self capture
-                feasableMoves.add(c);
+                feasableMoves.put(c, behavior.getActions().get(mp));
                 if (piece != null && piece.behavior.getTID().playerId != behavior.getTID().playerId) break; //No movement through
                 step++;
             }
@@ -68,6 +67,10 @@ public class Piece {
 
     public int getLastTurnMoved() {
         return lastTurnNumberMoved;
+    }
+
+    public Map<Integer, Flag> getFlags() {
+        return flags;
     }
 
     private boolean verifyConditions(List<Condition> fulfillCond, List<Condition> inhibitoryCond, Coordinate c, Board b) {

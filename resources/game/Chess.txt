@@ -5,7 +5,7 @@
 %Q
 %K
 
-?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R2QK2R
+?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
 //Knight
 
@@ -18,14 +18,14 @@ $N6 = [-1, 2 ,1]
 $N7 = [1, 2 ,1]
 $N8 = [2, 1 ,1]
 
-N.does(N1, ~, ~)
-N.does(N2, ~, ~)
-N.does(N3, ~, ~)
-N.does(N4, ~, ~)
-N.does(N5, ~, ~)
-N.does(N6, ~, ~)
-N.does(N7, ~, ~)
-N.does(N8, ~, ~)
+N.both.does(N1)
+N.both.does(N2)
+N.both.does(N3)
+N.both.does(N4)
+N.both.does(N5)
+N.both.does(N6)
+N.both.does(N7)
+N.both.does(N8)
 
 //Bishop
 
@@ -34,10 +34,10 @@ $B2 = [-1, 1 ,-1]
 $B3 = [1, -1 ,-1]
 $B4 = [1, 1 ,-1]
 
-B.does(B1, ~, ~)
-B.does(B2, ~, ~)
-B.does(B3, ~, ~)
-B.does(B4, ~, ~)
+B.both.does(B1)
+B.both.does(B2)
+B.both.does(B3)
+B.both.does(B4)
 
 //Rook
 
@@ -46,21 +46,21 @@ $R2 = [0, -1 ,-1]
 $R3 = [1, 0 ,-1]
 $R4 = [-1, 0 ,-1]
 
-R.does(R1, ~, ~)
-R.does(R2, ~, ~)
-R.does(R3, ~, ~)
-R.does(R4, ~, ~)
+R.both.does(R1)
+R.both.does(R2)
+R.both.does(R3)
+R.both.does(R4)
 
 //Queen
 
-Q.does(B1, ~, ~)
-Q.does(B2, ~, ~)
-Q.does(B3, ~, ~)
-Q.does(B4, ~, ~)
-Q.does(R1, ~, ~)
-Q.does(R2, ~, ~)
-Q.does(R3, ~, ~)
-Q.does(R4, ~, ~)
+Q.both.does(B1)
+Q.both.does(B2)
+Q.both.does(B3)
+Q.both.does(B4)
+Q.both.does(R1)
+Q.both.does(R2)
+Q.both.does(R3)
+Q.both.does(R4)
 
 //King
 
@@ -75,8 +75,11 @@ $K8 = [-1, 0 ,1]
 $K9 = [-2, 0 ,1]
 $K10 = [2, 0 ,1]
 
-!first = [TIMES_MOVED, 0];
+&first = [TIMES_MOVED, 0];
 #FirstCond = (~, ~, </, first>)
+
+!moveLRook = [MOVE, K1, K1];
+!moveRRook = [MOVE, K1, K1];
 
 $LR = [-4, 0, 1]
 $RR = [3, 0, 1]
@@ -93,82 +96,92 @@ $KR2 = [2, 0, 1]
 #KIC3 = (~, <*, KR1>, ~)
 #KIC4 = (~, <*, KR2>, ~)
 
-K.does(K1, ~, ~)
-K.does(K2, ~, ~)
-K.does(K3, ~, ~)
-K.does(K4, ~, ~)
-K.does(K5, ~, ~)
-K.does(K6, ~, ~)
-K.does(K7, ~, ~)
-K.does(K8, ~, ~)
+K.both.does(K1)
+K.both.does(K2)
+K.both.does(K3)
+K.both.does(K4)
+K.both.does(K5)
+K.both.does(K6)
+K.both.does(K7)
+K.both.does(K8)
 
-K.does(K9, FirstCond, ~)
-K.does(K9, LRCastle, ~)
-K.does(K9, ~, KIC1)
-K.does(K9, ~, KIC2)
-//K.action(K9, ) //Move rook
+K.both.must(K9, FirstCond)
+K.both.must(K9, LRCastle)
+K.both.cannot(K9, KIC1)
+K.both.cannot(K9, KIC2)
+K.both.action(K9, moveLRook)
 
-K.does(K10, FirstCond, ~)
-K.does(K10, RRCastle, ~)
-K.does(K10, ~, KIC3)
-K.does(K10, ~, KIC4)
-//K.action(K10, ) //Move rook
+K.both.must(K10, FirstCond)
+K.both.must(K10, RRCastle)
+K.both.cannot(K10, KIC3)
+K.both.cannot(K10, KIC4)
+K.both.action(K10, moveRRook)
 
 //Pawns
+
+!SetEPFlag = [SET_FLAG, 0, 1, 1];
 
 $P1 = [0, 1, 1]
 $P2 = [0, 2, 1]
 $P3 = [-1, 1, 1]
 $P4 = [1, 1, 1]
 
-$P1b = [0, -1, 1]
-$P2b = [0, -2, 1]
-$P3b = [-1, -1, 1]
-$P4b = [1, -1, 1]
-
 #PIC1 = (~, <*, P1>, ~)
 #PIC2 = (~, <*, P2>, ~)
 #PCL  = (~, <-, P3>, ~)
 #PCR  = (~, <-, P4>, ~)
 
-P.onlyDoes(P1, ~, PIC1)
-P.onlyDoes(P2, FirstCond, PIC1)
-P.onlyDoes(P2, ~, PIC2)
-//P.onlyAction(P2, ) //Set a flag active for 1 move
-P.onlyDoes(P3, PCL, ~)
-P.onlyDoes(P4, PCR, ~)
+P.cannot(P1, PIC1)
+P.must(P2, FirstCond)
+P.cannot(P2, PIC1)
+P.cannot(P2, PIC2)
+P.action(P2, SetEPFlag)
+P.must(P3, PCL)
+P.must(P4, PCR)
 
+$P1b = [0, -1, 1]
+$P2b = [0, -2, 1]
+$P3b = [-1, -1, 1]
+$P4b = [1, -1, 1]
 
 #PIC1b = (~, <*, P1b>, ~)
 #PIC2b = (~, <*, P2b>, ~)
 #PCLb  = (~, <-, P3b>, ~)
 #PCRb  = (~, <-, P4b>, ~)
 
-p.onlyDoes(P1b, ~, PIC1b)
-p.onlyDoes(P2b, FirstCond, PIC1b)
-p.onlyDoes(P2b, ~, PIC2b)
-//p.onlyAction(P2b, ) //Set a flag active for 1 move
-p.onlyDoes(P3b, PCLb, ~)
-p.onlyDoes(P4b, PCRb, ~)
+p.cannot(P1b, PIC1b)
+p.must(P2b, FirstCond)
+p.cannot(P2b, PIC1b)
+p.cannot(P2b, PIC2b)
+p.action(P2b, SetEPFlag)
+p.must(P3b, PCLb)
+p.must(P4b, PCRb)
 
 //En Passant
 
-!enPassantFlag = [CHECK_FLAG, 0, 1]
-
 $L = [-1, 0, 1]
 $R = [1, 0, 1]
+&enPassantFlag = [CHECK_FLAG, 0, 1]
 #PLep = (~, ~, <-L, enPassantFlag>)
 #PRep = (~, ~, <-R, enPassantFlag>)
 
+$F = [0, 1, 1]
+$B = [0, -1, 1]
+!captureFep = [REMOVE, F];
+!captureBep = [REMOVE, B];
+
 $PLep = [-1, 1, 1]
 $PRep = [1, 1, 1]
-P.onlyDoes(PLep, PLep, ~)
-P.onlyDoes(PRep, PRep, ~)
-//P.onlyAction() //Remove captured pawn
+
+P.must(PLep, PLep)
+P.action(PLep, captureBep)
+P.must(PRep, PRep)
+P.action(PRep, captureBep)
 
 $PLepb = [-1, -1, 1]
 $PRepb = [1, -1, 1]
-p.onlyDoes(PLepb, PLep, ~)
-p.onlyDoes(PRepb, PRep, ~)
-//p.onlyAction() //Remove captured pawn
 
+p.must(PLepb, PLep)
+p.action(PLepb, captureFep)
+p.must(PRepb, PRep)
+p.action(PRepb, captureFep)

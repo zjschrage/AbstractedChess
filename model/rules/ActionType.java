@@ -3,7 +3,7 @@ package model.rules;
 public enum ActionType {
     SET_FLAG,
     MOVE,
-    CAPTURE,
+    REMOVE,
     WIN,
     LOSE,
     DRAW

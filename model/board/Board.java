@@ -3,9 +3,11 @@ package model.board;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import model.piece.Piece;
 import model.piece.Player;
+import model.rules.Action;
 
 public class Board {
 
@@ -44,7 +46,7 @@ public class Board {
     }
 
     public void printBoard(Piece piece) {
-        List<Coordinate> fm = piece.getFeasableMoves(this);
+        Set<Coordinate> fm = piece.getFeasableMoves(this).keySet();
         for (int i = dimension.y() - 1; i >= 0; i--) {
             for (int j = 0; j < dimension.x(); j++) {
                 Coordinate c = new Coordinate(j, i);
@@ -74,8 +76,14 @@ public class Board {
 
     public boolean move(Coordinate from, Coordinate to) {
         Piece p = board.get(from).getPiece();
-        if (!p.getFeasableMoves(this).contains(to)) return false;
+        Map<Coordinate, List<Action>> feasableMoves = p.getFeasableMoves(this);
+        if (!feasableMoves.containsKey(to)) return false;
         board.get(to).placePiece(board.get(from).pickUpPiece());
+        List<Action> actions = feasableMoves.get(to);
+        if (actions == null) return true;
+        for (Action a : actions) {
+            a.execute(to, this);
+        }
         return true;
     }
 }

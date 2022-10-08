@@ -22,7 +22,7 @@ public class PieceType {
     }
 
     public String toString() {
-        return String.format("[type=%d, all=%b, friendly=%b, enemy= %b, self= %b, neighbor=%v]", type, all, friendly, enemy, selfInstance, relativeNeighbor);
+        return String.format("[type=%d, all=%b, friendly=%b, enemy= %b, self= %b, neighbor=%s]", type, all, friendly, enemy, selfInstance, relativeNeighbor);
     }
 
      

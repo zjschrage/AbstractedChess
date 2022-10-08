@@ -4,6 +4,7 @@ import java.util.List;
 
 import model.board.Board;
 import model.board.Coordinate;
+import model.piece.Flag;
 import model.piece.Piece;
 import model.piece.PieceType;
 import model.play.PlayManager;
@@ -11,9 +12,9 @@ import model.play.PlayManager;
 public class Property {
 
     private PropertyType propertyType;
-    private List<String> args;
+    private List<Object> args;
     
-    public Property(PropertyType propertyType, List<String> args) {
+    public Property(PropertyType propertyType, List<Object> args) {
         this.propertyType = propertyType;
         this.args = args;
     }
@@ -37,9 +38,9 @@ public class Property {
             if (pt.friendly && p.getTID().playerId != target.getTID().playerId) return false;
             if (pt.enemy && p.getTID().playerId == target.getTID().playerId) return false;
             if (pt.type == target.getTID().id) return false;
-            return (target.getTimesMoved() == Integer.parseInt(args.get(0)));
+            return (target.getTimesMoved() == Integer.parseInt((String)args.get(0)));
         }
-        return (p.getTimesMoved() == Integer.parseInt(args.get(0)));
+        return (p.getTimesMoved() == Integer.parseInt((String)args.get(0)));
     }
 
     private boolean verifyLastTurnMoved(PieceType pt, Coordinate c, Board b) {
@@ -52,13 +53,20 @@ public class Property {
             if (pt.friendly && p.getTID().playerId != target.getTID().playerId) return false;
             if (pt.enemy && p.getTID().playerId == target.getTID().playerId) return false;
             if (pt.type == target.getTID().id) return false;
-            return ((target.getLastTurnMoved() + Integer.parseInt(args.get(0))) == PlayManager.turn);
+            return ((target.getLastTurnMoved() + Integer.parseInt((String)args.get(0))) == PlayManager.turn);
         }
-        return ((p.getLastTurnMoved() + Integer.parseInt(args.get(0))) == PlayManager.turn);
+        return ((p.getLastTurnMoved() + Integer.parseInt((String)args.get(0))) == PlayManager.turn);
     }
 
     private boolean verifyFlag(PieceType pt, Coordinate c, Board b) {
-        return false;
+        if (pt.relativeNeighbor == null) return false;
+        c = new Coordinate(c.x() + pt.relativeNeighbor.xVector(), c.y() + pt.relativeNeighbor.yVector());
+        Piece p = getPiece(c, b);
+        if (p == null) return false;
+        Flag f = p.getFlags().get(Integer.parseInt((String)args.get(0)));
+        if (f == null) return false;
+        if (!f.isActive(PlayManager.turn)) return false;
+        return (f.getValue() == Integer.parseInt((String)args.get(1)));
     }
 
     private Piece getPiece(Coordinate c, Board b) {

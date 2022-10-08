@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.AbstractMap.SimpleEntry;
 
+import model.rules.Action;
+import model.rules.ActionType;
 import model.rules.Condition;
 import model.board.Board;
 import model.board.Coordinate;
@@ -25,13 +27,17 @@ import model.rules.PropertyType;
 public class Parser {
 
     public static final String DOES = "does";
-    public static final String ONLY_DOES = "onlyDoes";
+    public static final String MUST = "must";
+    public static final String CANNOT = "cannot";
+    public static final String ACTION = "action";
+    public static final String BOTH = "both";
     public static final Character PIECE_DECLARATOR = '%';
     public static final Character LAYOUT_DECLARATOR = '?';
     public static final Character VECTOR_DECLARATOR = '$';
     public static final Character COORDINATE_DECLARATOR = '@';
     public static final Character CONDITION_DECLARATOR = '#';
-    public static final Character PROPERTY_DECLARATOR = '!';
+    public static final Character PROPERTY_DECLARATOR = '&';
+    public static final Character ACTION_DECLARATOR = '!';
     public static final Character ASSIGNMENT_OPERATOR = '=';
     public static final Character DOT_OPERATOR = '.';
     public static final Character LEFT_BRACKET = '[';
@@ -54,6 +60,7 @@ public class Parser {
     private Map<String, Coordinate> coordinateTable;
     private Map<String, MovementPattern> vectorTable;
     private Map<String, Property> propertyTable;
+    private Map<String, Action> actionTable;
     private String fen;
 
     public Parser() {
@@ -64,6 +71,7 @@ public class Parser {
         coordinateTable = new HashMap<>();
         conditionTable = new HashMap<>();
         propertyTable = new HashMap<>();
+        actionTable = new HashMap<>();
         initFunctionTable();
         initSymbolTable();
     }
@@ -181,28 +189,88 @@ public class Parser {
         propertyTable.put(propertySymbol, new Property(PropertyType.valueOf(args[0]), propertiesLister(args)));
     }
 
-    private void does(String line) {
+    private void actionDeclaration(String line) {
+        int declaration = line.indexOf(ACTION_DECLARATOR) + 1;
+        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
+        String actionSymbol = line.substring(declaration, operator).trim();
+        Object[] args = getObjectArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
+        actionTable.put(actionSymbol, new Action(ActionType.valueOf(((String)args[0]).trim()), propertiesLister(args)));
+    }
+
+    private void bothDoes(String line) {
         char piece = line.charAt(0);
         char complementPiece = (char)(piece + ASCII_CASE_OFFSET);
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
-        assignBehavior(piece, args);
-        assignBehavior(complementPiece, args);
+        String[] arrangedArgs = {args[0], "", "", ""};
+        assignBehavior(piece, arrangedArgs);
+        assignBehavior(complementPiece, arrangedArgs);
     }
 
-    private void onlyDoes(String line) {
+    private void does(String line) {
         char piece = line.charAt(0);
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
-        assignBehavior(piece, args);
+        String[] arrangedArgs = {args[0], "", "", ""};
+        assignBehavior(piece, arrangedArgs);
+    }
+
+    private void bothMust(String line) {
+        char piece = line.charAt(0);
+        char complementPiece = (char)(piece + ASCII_CASE_OFFSET);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        String[] arrangedArgs = {args[0], args[1], "", ""};
+        assignBehavior(piece, arrangedArgs);
+        assignBehavior(complementPiece, arrangedArgs);
+    }
+
+    private void must(String line) {
+        char piece = line.charAt(0);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        String[] arrangedArgs = {args[0], args[1], "", ""};
+        assignBehavior(piece, arrangedArgs);
+    }
+
+    private void bothCannot(String line) {
+        char piece = line.charAt(0);
+        char complementPiece = (char)(piece + ASCII_CASE_OFFSET);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        String[] arrangedArgs = {args[0], "", args[1], ""};
+        assignBehavior(piece, arrangedArgs);
+        assignBehavior(complementPiece, arrangedArgs);
+    }
+
+    private void cannot(String line) {
+        char piece = line.charAt(0);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        String[] arrangedArgs = {args[0], "", args[1], ""};
+        assignBehavior(piece, arrangedArgs);
+    }
+
+    private void bothAction(String line) {
+        char piece = line.charAt(0);
+        char complementPiece = (char)(piece + ASCII_CASE_OFFSET);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        String[] arrangedArgs = {args[0], "", "", args[1]};
+        assignBehavior(piece, arrangedArgs);
+        assignBehavior(complementPiece, arrangedArgs);
+    }
+
+    private void action(String line) {
+        char piece = line.charAt(0);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        String[] arrangedArgs = {args[0], "", "", args[1]};
+        assignBehavior(piece, arrangedArgs);
     }
 
     private void assignBehavior(char piece, String[] args) {
         MovementPattern mp = vectorTable.get(args[0].trim());
         Condition fc = conditionTable.get(args[1].trim());
         Condition ic = conditionTable.get(args[2].trim());
+        Action a = actionTable.get(args[3].trim());
         if (mp == null) return;
         pieceTable.get(piece).addMovementPattern(mp);
         if (fc != null) pieceTable.get(piece).addFulfillCond(mp, fc);
         if (ic != null) pieceTable.get(piece).addInhibitoryCond(mp, ic);
+        if (a != null) pieceTable.get(piece).addAction(mp, a);
     }
 
     private String[] getArgs(String s, Character left, Character right) {
@@ -212,6 +280,20 @@ public class Parser {
         return argsString.split("" + COMMA);
     }
 
+    private Object[] getObjectArgs(String s, Character left, Character right) {
+        int argsBegin = s.indexOf(left) + 1;
+        int argsEnd = s.indexOf(right);
+        String argsString = s.substring(argsBegin, argsEnd).trim();
+        String[] listArgsString = argsString.split("" + COMMA);
+        Object[] objectArgs = new Object[listArgsString.length];
+        for (int i = 0; i < listArgsString.length; i++) {
+            listArgsString[i] = listArgsString[i].trim();
+            if (vectorTable.get(listArgsString[i]) != null) objectArgs[i] = vectorTable.get(listArgsString[i]);
+            else objectArgs[i] = listArgsString[i];
+        }
+        return objectArgs;
+    }
+
     private void initSymbolTable() {
         symbolTable.put(PIECE_DECLARATOR, (s) -> pieceDeclaration(s));
         symbolTable.put(LAYOUT_DECLARATOR, (s) -> layout(s));
@@ -219,21 +301,29 @@ public class Parser {
         symbolTable.put(COORDINATE_DECLARATOR, (s) -> coordinateDeclaration(s));
         symbolTable.put(CONDITION_DECLARATOR, (s) -> conditionDeclaration(s));
         symbolTable.put(PROPERTY_DECLARATOR, (s) -> propertyDeclaration(s));
+        symbolTable.put(ACTION_DECLARATOR, (s) -> actionDeclaration(s));
     }
 
     private void initFunctionTable() {
+        functionTable.put(BOTH + DOT_OPERATOR + DOES, (s) -> bothDoes(s));
+        functionTable.put(BOTH + DOT_OPERATOR + MUST, (s) -> bothMust(s));
+        functionTable.put(BOTH + DOT_OPERATOR + CANNOT, (s) -> bothCannot(s));
+        functionTable.put(BOTH + DOT_OPERATOR + ACTION, (s) -> bothAction(s));
         functionTable.put(DOES, (s) -> does(s));
-        functionTable.put(ONLY_DOES, (s) -> onlyDoes(s));
+        functionTable.put(MUST, (s) -> must(s));
+        functionTable.put(CANNOT, (s) -> cannot(s));
+        functionTable.put(ACTION, (s) -> action(s));
     }
 
     private int stoi(String s) {
         return Integer.parseInt(s.trim());
     }
 
-    private List<String> propertiesLister(String[] args) {
-        List<String> properties = new ArrayList<>();
+    private List<Object> propertiesLister(Object[] args) {
+        List<Object> properties = new ArrayList<>();
         for (int i = 1; i < args.length; i++) {
-            properties.add(args[i].trim());
+            if (args[i] instanceof String) args[i] = ((String)args[i]).trim();
+            properties.add(args[i]);
         }
         return properties;
     }

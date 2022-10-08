@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import model.rules.Action;
 import model.rules.Condition;
 import model.rules.MovementPattern;
 
@@ -16,18 +17,14 @@ public class PieceBehavior {
     private Set<MovementPattern> movementPattern;
     private Map<MovementPattern, List<Condition>> fulfillCond;
     private Map<MovementPattern, List<Condition>> inhibitoryCond;
+    private Map<MovementPattern, List<Action>> actions;
 
     public PieceBehavior(PieceTypeID TID) {
         this.TID = TID;
         this.movementPattern = new HashSet<>();
         this.fulfillCond = new HashMap<>();
         this.inhibitoryCond = new HashMap<>();
-    }
-
-    public void setBehavior(Set<MovementPattern> movementPattern, Map<MovementPattern, List<Condition>> fulfillCond, Map<MovementPattern, List<Condition>> inhibitoryCond) {
-        this.movementPattern = movementPattern;
-        this.fulfillCond = fulfillCond;
-        this.inhibitoryCond = inhibitoryCond;
+        this.actions = new HashMap<>();
     }
 
     public void addMovementPattern(MovementPattern mp) {
@@ -46,6 +43,12 @@ public class PieceBehavior {
         inhibitoryCond.get(mp).add(c);
     }
 
+    public void addAction(MovementPattern mp, Action a) {
+        List<Action> as = actions.get(mp);
+        if (as == null) actions.put(mp, new ArrayList<>());
+        actions.get(mp).add(a);
+    }
+
     public PieceTypeID getTID() {
         return TID;
     }
@@ -60,6 +63,10 @@ public class PieceBehavior {
 
     public Map<MovementPattern, List<Condition>> getInhibitoryCond() {
         return inhibitoryCond;
+    }
+
+    public Map<MovementPattern, List<Action>> getActions() {
+        return actions;
     }
     
 }
