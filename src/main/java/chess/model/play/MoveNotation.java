@@ -13,6 +13,9 @@ public class MoveNotation {
 
     public static final int ASCII_OFFSET = 97;
 
+    public static final Character CHECK = '+';
+    public static final Character CHECK_MATE = '#';
+
     private Board board;
     private Set<Character> pieceIndicators;
 
@@ -28,6 +31,8 @@ public class MoveNotation {
     
     public Move translateNotation(String notation) {
         notation = notation.trim();
+        char last = notation.charAt(notation.length()-1);
+        if (last == CHECK || last == CHECK_MATE) notation = notation.substring(0, notation.length()-1);
         return getMove(notation);
     }
 
@@ -73,22 +78,42 @@ public class MoveNotation {
     }
 
     private Coordinate determinePiece(List<Piece> pieces, String prefix) {
+        List<Piece> narrowedPieces = new ArrayList<>();
         for (Piece p : pieces) {
             if (prefix.contains("" + p.getTID().symbol)) {
-                //String distinguisher = prefix.substring(1);
-                return p.getCoordinate();
+                narrowedPieces.add(p);
             }
         }
-        for (Piece p : pieces) {
-            if (p.getTID().symbol == '\0') {
-                return p.getCoordinate();
+        if (narrowedPieces.size() == 0) {
+            for (Piece p : pieces) {
+                if (p.getTID().symbol == '\0') {
+                    narrowedPieces.add(p);
+                }
             }
+        }
+        if (narrowedPieces.size() == 1) return narrowedPieces.get(0).getCoordinate();
+        for (Piece p : narrowedPieces) {
+            char distinguisher = (p.getTID().symbol == '\0') ? prefix.charAt(0) : prefix.charAt(1);
+            if (!coordinateHasDistinguisher(p.getCoordinate(), distinguisher)) continue;
+            return p.getCoordinate();
         }
         return new Coordinate(0, 0);
     }
 
     private boolean outOfTurn(Piece p) {
         return (PlayManager.turn % 2 != p.getTID().playerId.ordinal());
+    }
+
+    private boolean coordinateHasDistinguisher(Coordinate c, char distinguisher) {
+        int val = 0;
+        if (!Character.isDigit(distinguisher)) {
+            val = (int)distinguisher - ASCII_OFFSET;
+            return (c.x() == val);
+        }
+        else {
+            val = Integer.parseInt("" + distinguisher) - 1;
+            return (c.y() == val);
+        }
     }
 
 }

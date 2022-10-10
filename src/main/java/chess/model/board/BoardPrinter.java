@@ -5,6 +5,7 @@ import java.util.Set;
 
 import chess.model.piece.Piece;
 import chess.model.piece.Player;
+import chess.parser.Constants;
 
 public class BoardPrinter {
 
@@ -23,23 +24,13 @@ public class BoardPrinter {
                 Piece p = boardObject.get(new Coordinate(j, i)).getPiece();
                 if (p != null) {
                     if (p.getTID().playerId == Player.WHITE) System.out.print((char)p.getTID().id + " ");
-                    else System.out.print((char)(p.getTID().id + 32) + " ");
+                    else System.out.print((char)(p.getTID().id + Constants.ASCII_CASE_OFFSET) + " ");
                 }
                 else System.out.print("_ ");
             }
             System.out.println();
         }
-
-        System.out.print("\n     ");
-        for (int j = 0; j < dimension.x(); j++) {
-            System.out.print("| ");
-        }
-        System.out.print("\n     ");
-        for (int j = 0; j < dimension.x(); j++) {
-            System.out.printf("%c ", (char)(j + 97));
-        }
-
-        System.out.println();
+        footer();
     }
 
     public void printBoard(Piece piece, Board board) {
@@ -61,7 +52,10 @@ public class BoardPrinter {
             }
             System.out.println();
         }
-        
+        footer();
+    }
+
+    private void footer() {
         System.out.print("\n     ");
         for (int j = 0; j < dimension.x(); j++) {
             System.out.print("| ");
@@ -70,8 +64,7 @@ public class BoardPrinter {
         for (int j = 0; j < dimension.x(); j++) {
             System.out.printf("%c ", (char)(j + 97));
         }
-
         System.out.println();
     }
-    
+
 }

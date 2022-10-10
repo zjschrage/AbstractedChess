@@ -28,14 +28,14 @@ import static chess.parser.Constants.*;
 
 public class Parser {
 
-    private Map<String, SymbolMapper> functionTable;
-    private Map<Character, SymbolMapper> symbolTable;
-    private Map<Character, PieceBehavior> pieceTable;
-    private Map<String, Condition> conditionTable;
-    private Map<String, Coordinate> coordinateTable;
-    private Map<String, MovementPattern> vectorTable;
-    private Map<String, Property> propertyTable;
-    private Map<String, Action> actionTable;
+    private final Map<String, SymbolMapper> functionTable;
+    private final Map<Character, SymbolMapper> symbolTable;
+    private final Map<Character, PieceBehavior> pieceTable;
+    private final Map<String, Condition> conditionTable;
+    private final Map<String, Coordinate> coordinateTable;
+    private final Map<String, MovementPattern> vectorTable;
+    private final Map<String, Property> propertyTable;
+    private final Map<String, Action> actionTable;
     private String fen;
 
     /**
@@ -62,7 +62,7 @@ public class Parser {
      * The contents is saved into mapping tables which is used to
      * construct the game abstract representation
      * @param path Path of the game file
-     * @throws IOException
+     * @throws IOException file not found
      */
     public void loadGameFile(String path) throws IOException {
         FileReader fr = new FileReader(path);
@@ -95,13 +95,13 @@ public class Parser {
     private void pieceDeclaration(String line) {
         char piece = line.charAt(line.indexOf(PIECE_DECLARATOR) + 1);
         char symbol = getSymbol(line, piece);
-        pieceTable.put(piece, new PieceBehavior(new PieceTypeID(Player.WHITE, (int)piece, symbol)));
-        pieceTable.put((char)(piece + ASCII_CASE_OFFSET), new PieceBehavior(new PieceTypeID(Player.BLACK, (int)piece, symbol)));
+        pieceTable.put(piece, new PieceBehavior(new PieceTypeID(Player.WHITE, piece, symbol)));
+        pieceTable.put((char)(piece + ASCII_CASE_OFFSET), new PieceBehavior(new PieceTypeID(Player.BLACK, piece, symbol)));
     }
 
     private void layout(String line) {
         int declaration = line.indexOf(LAYOUT_DECLARATOR) + 1;
-        fen = line.substring(declaration, line.length()).trim();
+        fen = line.substring(declaration).trim();
     }
 
     private void vectorDeclaration(String line) {
@@ -130,9 +130,9 @@ public class Parser {
         Optional<SimpleEntry<PieceType, Coordinate>> absoluteCondition = parseConditionEntry(args[0].trim(), coordinateTable);
         Optional<SimpleEntry<PieceType, MovementPattern>> relativeCondition = parseConditionEntry(args[1].trim(), vectorTable);
         Optional<SimpleEntry<PieceType, Property>> propertyCondition = parseConditionEntry(args[2].trim(), propertyTable);
-        if (absoluteCondition.isPresent()) conditionTable.get(conditionSymbol).addAbsoluteCondition(absoluteCondition.get());
-        if (relativeCondition.isPresent()) conditionTable.get(conditionSymbol).addRelativeCondition(relativeCondition.get());
-        if (propertyCondition.isPresent()) conditionTable.get(conditionSymbol).addPropertyCondition(propertyCondition.get());
+        absoluteCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addAbsoluteCondition(e));
+        relativeCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addRelativeCondition(e));
+        propertyCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addPropertyCondition(e));
     }
 
     private void propertyDeclaration(String line) {
@@ -147,7 +147,7 @@ public class Parser {
         int declaration = line.indexOf(ACTION_DECLARATOR) + 1;
         int operator = line.indexOf(ASSIGNMENT_OPERATOR);
         String actionSymbol = line.substring(declaration, operator).trim();
-        Object[] args = getObjectArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
+        Object[] args = getObjectArgs(line);
         actionTable.put(actionSymbol, new Action(ActionType.valueOf(((String)args[0]).trim()), propertiesLister(args)));
     }
 
@@ -174,7 +174,7 @@ public class Parser {
 
     private <T> Optional<SimpleEntry<PieceType, T>> parseConditionEntry(String args, Map<String, T> table) {
         Optional<String[]> conditionArgs = parseCondition(args);
-        if (!conditionArgs.isPresent()) return Optional.empty();
+        if (conditionArgs.isEmpty()) return Optional.empty();
         String key = conditionArgs.get()[0].trim();
         String value = conditionArgs.get()[1].trim();
         return Optional.of(new AbstractMap.SimpleEntry<>(determinePieceType(key), table.get(value)));
@@ -286,9 +286,9 @@ public class Parser {
         return argsString.split("" + COMMA);
     }
 
-    private Object[] getObjectArgs(String s, Character left, Character right) {
-        int argsBegin = s.indexOf(left) + 1;
-        int argsEnd = s.indexOf(right);
+    private Object[] getObjectArgs(String s) {
+        int argsBegin = s.indexOf(Constants.LEFT_BRACKET) + 1;
+        int argsEnd = s.indexOf(Constants.RIGHT_BRACKET);
         String argsString = s.substring(argsBegin, argsEnd).trim();
         String[] listArgsString = argsString.split("" + COMMA);
         Object[] objectArgs = new Object[listArgsString.length];
@@ -301,24 +301,24 @@ public class Parser {
     }
 
     private void initSymbolTable() {
-        symbolTable.put(PIECE_DECLARATOR, (s) -> pieceDeclaration(s));
-        symbolTable.put(LAYOUT_DECLARATOR, (s) -> layout(s));
-        symbolTable.put(VECTOR_DECLARATOR, (s) -> vectorDeclaration(s));
-        symbolTable.put(COORDINATE_DECLARATOR, (s) -> coordinateDeclaration(s));
-        symbolTable.put(CONDITION_DECLARATOR, (s) -> conditionDeclaration(s));
-        symbolTable.put(PROPERTY_DECLARATOR, (s) -> propertyDeclaration(s));
-        symbolTable.put(ACTION_DECLARATOR, (s) -> actionDeclaration(s));
+        symbolTable.put(PIECE_DECLARATOR, this::pieceDeclaration);
+        symbolTable.put(LAYOUT_DECLARATOR, this::layout);
+        symbolTable.put(VECTOR_DECLARATOR, this::vectorDeclaration);
+        symbolTable.put(COORDINATE_DECLARATOR, this::coordinateDeclaration);
+        symbolTable.put(CONDITION_DECLARATOR, this::conditionDeclaration);
+        symbolTable.put(PROPERTY_DECLARATOR, this::propertyDeclaration);
+        symbolTable.put(ACTION_DECLARATOR, this::actionDeclaration);
     }
 
     private void initFunctionTable() {
-        functionTable.put(BOTH + DOT_OPERATOR + DOES, (s) -> bothDoes(s));
-        functionTable.put(BOTH + DOT_OPERATOR + MUST, (s) -> bothMust(s));
-        functionTable.put(BOTH + DOT_OPERATOR + CANNOT, (s) -> bothCannot(s));
-        functionTable.put(BOTH + DOT_OPERATOR + ACTION, (s) -> bothAction(s));
-        functionTable.put(DOES, (s) -> does(s));
-        functionTable.put(MUST, (s) -> must(s));
-        functionTable.put(CANNOT, (s) -> cannot(s));
-        functionTable.put(ACTION, (s) -> action(s));
+        functionTable.put(BOTH + DOT_OPERATOR + DOES, this::bothDoes);
+        functionTable.put(BOTH + DOT_OPERATOR + MUST, this::bothMust);
+        functionTable.put(BOTH + DOT_OPERATOR + CANNOT, this::bothCannot);
+        functionTable.put(BOTH + DOT_OPERATOR + ACTION, this::bothAction);
+        functionTable.put(DOES, this::does);
+        functionTable.put(MUST, this::must);
+        functionTable.put(CANNOT, this::cannot);
+        functionTable.put(ACTION, this::action);
     }
 
     private int stoi(String s) {

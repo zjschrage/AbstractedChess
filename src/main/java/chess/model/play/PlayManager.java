@@ -39,7 +39,6 @@ public class PlayManager {
 
     private boolean verifyOrder(Piece p) {
         Player hasTurn = (turn % 2 == 0) ? Player.WHITE : Player.BLACK;
-        System.out.println(turn + " " + hasTurn.toString());
         return (p.getTID().playerId == hasTurn);
     }
 

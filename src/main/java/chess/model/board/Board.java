@@ -6,12 +6,14 @@ import java.util.Map;
 
 import chess.model.piece.Piece;
 import chess.model.rules.Action;
+import chess.parser.FenSerializer;
 
 public class Board {
 
     private Map<Coordinate, Tile> board;
     private Dimension dimension;
     private BoardPrinter boardPrinter;
+    private FenSerializer fenSerializer;
 
     public Board() {
         board = new HashMap<Coordinate, Tile>();
@@ -28,6 +30,7 @@ public class Board {
             board.put(pieces.get(p), new Tile(p));
         }
         boardPrinter = new BoardPrinter(board, dimension);
+        fenSerializer = new FenSerializer(dimension);
     }
 
     public Map<Coordinate, Tile> getBoard() {
@@ -49,6 +52,10 @@ public class Board {
             a.execute(to, this);
         }
         return true;
+    }
+
+    public String getFEN() {
+        return fenSerializer.getFen(this);
     }
 
     public void print() {
