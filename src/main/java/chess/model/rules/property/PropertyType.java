@@ -1,4 +1,4 @@
-package chess.model.rules;
+package chess.model.rules.property;
 
 public enum PropertyType {
     TIMES_MOVED,

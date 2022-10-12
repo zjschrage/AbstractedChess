@@ -5,6 +5,8 @@ import chess.model.board.Coordinate;
 import chess.model.piece.Piece;
 import chess.model.piece.Player;
 
+import java.util.Optional;
+
 public class PlayManager {
 
     //Global Turn Variable
@@ -27,8 +29,9 @@ public class PlayManager {
     public void move(Coordinate from, Coordinate to) {
         Piece p = board.getBoard().get(from).getPiece();
         if (p == null || !verifyOrder(p) || !verifyNoSelfCheck(p)) return;
+        Optional<Piece> capturedPiece = Optional.ofNullable(board.getBoard().get(to).getPiece());
         if (board.move(from, to)) {
-            p.updateStatistics(to, turn);
+            p.updateStatistics(to, turn, capturedPiece);
             turn++;
         }
     }

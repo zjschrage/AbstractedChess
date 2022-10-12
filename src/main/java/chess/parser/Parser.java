@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.AbstractMap.SimpleEntry;
 
-import chess.model.rules.Action;
-import chess.model.rules.ActionType;
+import chess.model.rules.action.Action;
+import chess.model.rules.action.ActionType;
 import chess.model.rules.Condition;
 import chess.model.board.Board;
 import chess.model.board.Coordinate;
@@ -21,8 +21,9 @@ import chess.model.piece.PieceType;
 import chess.model.piece.PieceTypeID;
 import chess.model.piece.Player;
 import chess.model.rules.MovementPattern;
-import chess.model.rules.Property;
-import chess.model.rules.PropertyType;
+import chess.model.rules.property.Property;
+import chess.model.rules.property.PropertyType;
+import chess.utils.InstanceFactory;
 
 import static chess.parser.Constants.*;
 
@@ -36,6 +37,8 @@ public class Parser {
     private final Map<String, MovementPattern> vectorTable;
     private final Map<String, Property> propertyTable;
     private final Map<String, Action> actionTable;
+    private final Map<ActionType, String> actionClassReflector;
+    private final Map<PropertyType, String> propertyClassReflector;
     private String fen;
 
     /**
@@ -53,8 +56,12 @@ public class Parser {
         conditionTable = new HashMap<>();
         propertyTable = new HashMap<>();
         actionTable = new HashMap<>();
+        actionClassReflector = new HashMap<>();
+        propertyClassReflector = new HashMap<>();
         initFunctionTable();
         initSymbolTable();
+        initActionClassReflector();
+        initPropertyClassReflector();
     }
 
     /**
@@ -140,7 +147,16 @@ public class Parser {
         int operator = line.indexOf(ASSIGNMENT_OPERATOR);
         String propertySymbol = line.substring(declaration, operator).trim();
         String[] args = getArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
-        propertyTable.put(propertySymbol, new Property(PropertyType.valueOf(args[0]), propertiesLister(args)));
+        PropertyType pt = PropertyType.valueOf(((String)args[0]).trim());
+        Class<?>[] paramTypes = {PropertyType.class, List.class};
+        Object[] params = {pt, propertiesLister(args)};
+        Object p = null;
+        try {
+            p = InstanceFactory.createInstance(propertyClassReflector.get(pt), paramTypes, params);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        propertyTable.put(propertySymbol, Property.class.cast(p));
     }
 
     private void actionDeclaration(String line) {
@@ -148,7 +164,16 @@ public class Parser {
         int operator = line.indexOf(ASSIGNMENT_OPERATOR);
         String actionSymbol = line.substring(declaration, operator).trim();
         Object[] args = getObjectArgs(line);
-        actionTable.put(actionSymbol, new Action(ActionType.valueOf(((String)args[0]).trim()), propertiesLister(args)));
+        ActionType at = ActionType.valueOf(((String)args[0]).trim());
+        Class<?>[] paramTypes = {ActionType.class, List.class};
+        Object[] params = {at, propertiesLister(args)};
+        Object a = null;
+        try {
+            a = InstanceFactory.createInstance(actionClassReflector.get(at), paramTypes, params);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        actionTable.put(actionSymbol, Action.class.cast(a));
     }
 
     private String[] reconstructedArgs(String[] args) {
@@ -267,6 +292,14 @@ public class Parser {
         assignBehavior(piece, arrangedArgs);
     }
 
+    private void bothCapture(String line) {
+
+    }
+
+    private void capture(String line) {
+
+    }
+
     private void assignBehavior(char piece, String[] args) {
         MovementPattern mp = vectorTable.get(args[0].trim());
         Condition fc = conditionTable.get(args[1].trim());
@@ -315,10 +348,24 @@ public class Parser {
         functionTable.put(BOTH + DOT_OPERATOR + MUST, this::bothMust);
         functionTable.put(BOTH + DOT_OPERATOR + CANNOT, this::bothCannot);
         functionTable.put(BOTH + DOT_OPERATOR + ACTION, this::bothAction);
+        functionTable.put(BOTH + DOT_OPERATOR + CAPTURE, this::bothCapture);
         functionTable.put(DOES, this::does);
         functionTable.put(MUST, this::must);
         functionTable.put(CANNOT, this::cannot);
         functionTable.put(ACTION, this::action);
+        functionTable.put(CAPTURE, this::capture);
+    }
+
+    private void initPropertyClassReflector() {
+        propertyClassReflector.put(PropertyType.CHECK_FLAG, "chess.model.rules.property.CheckFlag");
+        propertyClassReflector.put(PropertyType.TIMES_MOVED, "chess.model.rules.property.TimesMoved");
+        propertyClassReflector.put(PropertyType.TURNS_AGO_MOVED, "chess.model.rules.property.TurnsAgoMoved");
+    }
+
+    private void initActionClassReflector() {
+        actionClassReflector.put(ActionType.SET_FLAG, "chess.model.rules.action.SetFlag");
+        actionClassReflector.put(ActionType.MOVE, "chess.model.rules.action.Move");
+        actionClassReflector.put(ActionType.REMOVE, "chess.model.rules.action.Remove");
     }
 
     private int stoi(String s) {

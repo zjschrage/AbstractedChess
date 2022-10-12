@@ -34,7 +34,7 @@ public class BoardPrinter {
     }
 
     public void printBoard(Piece piece, Board board) {
-        Set<Coordinate> fm = piece.getFeasableMoves(board).keySet();
+        Set<Coordinate> fm = piece.getFeasibleMoves(board).keySet();
         for (int i = dimension.y() - 1; i >= 0; i--) {
             System.out.printf("%d--  ", i+1);
             for (int j = 0; j < dimension.x(); j++) {

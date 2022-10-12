@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import chess.model.rules.Action;
+import chess.model.rules.action.Action;
 import chess.model.rules.Condition;
 import chess.model.rules.MovementPattern;
 

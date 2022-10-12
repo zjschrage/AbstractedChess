@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import chess.model.piece.Piece;
-import chess.model.rules.Action;
+import chess.model.rules.action.Action;
 import chess.parser.FenSerializer;
 
 public class Board {
@@ -43,7 +43,7 @@ public class Board {
 
     public boolean move(Coordinate from, Coordinate to) {
         Piece p = board.get(from).getPiece();
-        Map<Coordinate, List<Action>> feasableMoves = p.getFeasableMoves(this);
+        Map<Coordinate, List<Action>> feasableMoves = p.getFeasibleMoves(this);
         if (!feasableMoves.containsKey(to)) return false;
         board.get(to).placePiece(board.get(from).pickUpPiece());
         List<Action> actions = feasableMoves.get(to);

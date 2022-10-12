@@ -3,10 +3,11 @@ package chess.model.piece;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import chess.model.board.Board;
 import chess.model.board.Coordinate;
-import chess.model.rules.Action;
+import chess.model.rules.action.Action;
 import chess.model.rules.Condition;
 import chess.model.rules.MovementPattern;
 
@@ -16,21 +17,18 @@ public class Piece {
     private PieceBehavior behavior;
 
     //Instance Variables
-    private Coordinate coordinate;
-    private int timesMoved;
-    private int lastTurnNumberMoved;
     private Map<Integer, Flag> flags;
+    private PieceStatistics statistics;
 
     public Piece(PieceBehavior behavior, Coordinate coordinate) {
         this.behavior = behavior;
-        this.coordinate = coordinate;
-        timesMoved = 0;
-        lastTurnNumberMoved = -1;
         flags = new HashMap<>();
+        statistics = new PieceStatistics(coordinate);
     }
 
-    public Map<Coordinate, List<Action>> getFeasableMoves(Board board) {
+    public Map<Coordinate, List<Action>> getFeasibleMoves(Board board) {
         Map<Coordinate, List<Action>> feasableMoves = new HashMap<>();
+        Coordinate coordinate = statistics.getCoordinate();
         for (MovementPattern mp : behavior.getMovementPattern()) {
             if (!verifyConditions(behavior.getFulfillCond().get(mp), behavior.getInhibitoryCond().get(mp), coordinate, board)) continue;
             int xVec = mp.xVector();
@@ -55,22 +53,20 @@ public class Piece {
         return behavior.getTID();
     }
 
-    public void updateStatistics(Coordinate c, int turn) {
-        coordinate = c;
-        timesMoved++;
-        lastTurnNumberMoved = turn;
+    public void updateStatistics(Coordinate c, int turn, Optional<Piece> p) {
+        statistics.updateStatistics(c, turn, p);
     }
 
     public Coordinate getCoordinate() {
-        return coordinate;
+        return statistics.getCoordinate();
     }
 
     public int getTimesMoved() {
-        return timesMoved;
+        return statistics.getTimesMoved();
     }
 
     public int getLastTurnMoved() {
-        return lastTurnNumberMoved;
+        return statistics.getLastTurnNumberMoved();
     }
 
     public Map<Integer, Flag> getFlags() {

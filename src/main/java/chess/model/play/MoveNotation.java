@@ -71,7 +71,7 @@ public class MoveNotation {
             Piece p = board.getBoard().get(c).getPiece();
             if (p == null) continue;
             if (outOfTurn(p)) continue;
-            Set<Coordinate> cords = p.getFeasableMoves(board).keySet();
+            Set<Coordinate> cords = p.getFeasibleMoves(board).keySet();
             if (cords.contains(dst)) pieces.add(p);
         }
         return pieces;

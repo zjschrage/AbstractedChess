@@ -6,6 +6,7 @@ public class Constants {
     public static final String MUST = "must";
     public static final String CANNOT = "cannot";
     public static final String ACTION = "action";
+    public static final String CAPTURE = "capture";
     public static final String BOTH = "both";
     public static final Character PIECE_DECLARATOR = '%';
     public static final Character LAYOUT_DECLARATOR = '?';

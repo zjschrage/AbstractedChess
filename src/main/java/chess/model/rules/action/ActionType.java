@@ -1,4 +1,4 @@
-package chess.model.rules;
+package chess.model.rules.action;
 
 public enum ActionType {
     SET_FLAG,
