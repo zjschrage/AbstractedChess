@@ -43,10 +43,10 @@ public class Board {
 
     public boolean move(Coordinate from, Coordinate to) {
         Piece p = board.get(from).getPiece();
-        Map<Coordinate, List<Action>> feasableMoves = p.getFeasibleMoves(this);
-        if (!feasableMoves.containsKey(to)) return false;
+        Map<Coordinate, List<Action>> feasibleMoves = p.getFeasibleMoves(this);
+        if (!feasibleMoves.containsKey(to)) return false;
         board.get(to).placePiece(board.get(from).pickUpPiece());
-        List<Action> actions = feasableMoves.get(to);
+        List<Action> actions = feasibleMoves.get(to);
         if (actions == null) return true;
         for (Action a : actions) {
             a.execute(to, this);

@@ -2,7 +2,6 @@ package chess.model.piece;
 
 import chess.model.board.Coordinate;
 
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

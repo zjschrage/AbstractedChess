@@ -1,7 +1,6 @@
 package chess.model.rules.action;
 
 import java.util.List;
-import java.util.Map;
 
 import chess.model.board.Board;
 import chess.model.board.Coordinate;
@@ -11,7 +10,6 @@ public abstract class Action {
 
     protected ActionType actionType;
     protected List<Object> args;
-    protected boolean capture;
     
     public Action(ActionType actionType, List<Object> args) {
         this.actionType = actionType;

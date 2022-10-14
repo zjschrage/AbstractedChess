@@ -1,8 +1,10 @@
 package chess.parser;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,8 +74,9 @@ public class Parser {
      * @throws IOException file not found
      */
     public void loadGameFile(String path) throws IOException {
-        FileReader fr = new FileReader(path);
-        BufferedReader br = new BufferedReader(fr);
+        InputStream is = Parser.class.getResourceAsStream(path);
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
         String line;
         while ((line = br.readLine()) != null) {
             processLine(line);

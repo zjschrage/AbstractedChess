@@ -8,11 +8,14 @@ import chess.model.play.PlayManager;
 import chess.parser.Parser;
 
 public class Launcher {
+
+    public static final String GAME_RESOURCE_FOLDER = "/game/";
+
     public static void main(String[] args) {
 
         Parser parser = new Parser();
         try {
-            parser.loadGameFile("src/main/java/chess/resources/game/Chess.txt");
+            parser.loadGameFile(GAME_RESOURCE_FOLDER + "Chess.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package chess;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import chess.model.board.Board;
@@ -26,7 +27,7 @@ public class AppTest {
     public static void globalInit() {
         parser = new Parser();
         try {
-            parser.loadGameFile("src/main/java/chess/resources/game/Chess.txt");
+            parser.loadGameFile(Launcher.GAME_RESOURCE_FOLDER + "Chess.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,6 +78,15 @@ public class AppTest {
         pm.move("d5");
         pm.move("Bf4");
         assertTrue(ans.equals(b.getFEN()));
+    }
+
+    @Test
+    public void game3() {
+        pm.move("d4");
+        pm.move("d5");
+        pm.move("Bf4");
+        boolean badMove = pm.move("d4");
+        assertFalse(badMove);
     }
 
     @Test

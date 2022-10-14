@@ -21,19 +21,22 @@ public class PlayManager {
         this.moveNotator = new MoveNotation(board);
     }
 
-    public void move(String notation) {
+    public boolean move(String notation) {
         Move mv = moveNotator.translateNotation(notation);
-        if (mv != null) move(mv.src(), mv.dst());
+        if (mv != null) return move(mv.src(), mv.dst());
+        return false;
     }
 
-    public void move(Coordinate from, Coordinate to) {
+    public boolean move(Coordinate from, Coordinate to) {
         Piece p = board.getBoard().get(from).getPiece();
-        if (p == null || !verifyOrder(p) || !verifyNoSelfCheck(p)) return;
+        if (p == null || !verifyOrder(p) || !verifyNoSelfCheck(p)) return false;
         Optional<Piece> capturedPiece = Optional.ofNullable(board.getBoard().get(to).getPiece());
         if (board.move(from, to)) {
             p.updateStatistics(to, turn, capturedPiece);
             turn++;
+            return true;
         }
+        return false;
     }
 
     public Coordinate translateCoordinate(String notation) {
