@@ -18,6 +18,7 @@ public class PieceBehavior {
     private Map<MovementPattern, List<Condition>> fulfillCond;
     private Map<MovementPattern, List<Condition>> inhibitoryCond;
     private Map<MovementPattern, List<Action>> actions;
+    private Map<Action, List<Condition>> captureActions;
 
     public PieceBehavior(PieceTypeID TID) {
         this.TID = TID;
@@ -25,6 +26,7 @@ public class PieceBehavior {
         this.fulfillCond = new HashMap<>();
         this.inhibitoryCond = new HashMap<>();
         this.actions = new HashMap<>();
+        this.captureActions = new HashMap<>();
     }
 
     public void addMovementPattern(MovementPattern mp) {
@@ -49,6 +51,12 @@ public class PieceBehavior {
         actions.get(mp).add(a);
     }
 
+    public void addCaptureAction(Action a, Condition c) {
+        List<Condition> cs = captureActions.get(a);
+        if (cs == null) captureActions.put(a, new ArrayList<>());
+        if (c != null) captureActions.get(a).add(c);
+    }
+
     public PieceTypeID getTID() {
         return TID;
     }
@@ -68,5 +76,7 @@ public class PieceBehavior {
     public Map<MovementPattern, List<Action>> getActions() {
         return actions;
     }
+
+    public Map<Action, List<Condition>> getCaptureActions() { return captureActions; }
     
 }

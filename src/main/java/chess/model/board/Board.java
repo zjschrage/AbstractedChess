@@ -1,5 +1,6 @@
 package chess.model.board;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +46,12 @@ public class Board {
         Piece p = board.get(from).getPiece();
         Map<Coordinate, List<Action>> feasibleMoves = p.getFeasibleMoves(this);
         if (!feasibleMoves.containsKey(to)) return false;
+        List<Action> actions = new ArrayList<>();
+        if (board.get(to).getPiece() != null) actions.addAll(p.getCaptureActions(this));
         board.get(to).placePiece(board.get(from).pickUpPiece());
-        List<Action> actions = feasibleMoves.get(to);
-        if (actions == null) return true;
+        List<Action> moveActions = feasibleMoves.get(to);
+        if (moveActions != null) actions.addAll(moveActions);
+        if (actions.size() == 0) return true;
         for (Action a : actions) {
             a.execute(to, this);
         }

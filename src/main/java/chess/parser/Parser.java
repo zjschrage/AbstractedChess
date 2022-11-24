@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -296,11 +297,23 @@ public class Parser {
     }
 
     private void bothCapture(String line) {
-
+        char piece = line.charAt(0);
+        char complementPiece = (char)(piece + ASCII_CASE_OFFSET);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        Action captureA = actionTable.get(args[0].trim());
+        if (captureA != null) {
+            pieceTable.get(piece).addCaptureAction(captureA, null);
+            pieceTable.get(complementPiece).addCaptureAction(captureA, null);
+        }
     }
 
     private void capture(String line) {
-
+        char piece = line.charAt(0);
+        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+        String[] arrangedArgs = {"", "", "", "", args[0]};
+        assignBehavior(piece, arrangedArgs);
+        Action captureA = actionTable.get(args[0].trim());
+        if (captureA != null) pieceTable.get(piece).addCaptureAction(captureA, null);
     }
 
     private void assignBehavior(char piece, String[] args) {

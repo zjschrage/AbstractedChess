@@ -1,9 +1,6 @@
 package chess.model.piece;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import chess.model.board.Board;
 import chess.model.board.Coordinate;
@@ -51,6 +48,20 @@ public class Piece {
 
     public PieceTypeID getTID() {
         return behavior.getTID();
+    }
+
+    public List<Action> getCaptureActions(Board board) {
+        List<Action> captureActions = new ArrayList<>();
+        Map<Action, List<Condition>> potentialCaptureActions = behavior.getCaptureActions();
+        for (Action a : potentialCaptureActions.keySet()) {
+            boolean fulfilled = true;
+            List<Condition> conditions = potentialCaptureActions.get(a);
+            for (Condition c : conditions) {
+                fulfilled &= c.verifyCondition(getTID(), statistics.getCoordinate(), board);
+            }
+            if (fulfilled) captureActions.add(a);
+        }
+        return captureActions;
     }
 
     public void updateStatistics(Coordinate c, int turn, Optional<Piece> p) {

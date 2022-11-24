@@ -15,7 +15,7 @@ public class Launcher {
 
         Parser parser = new Parser();
         try {
-            parser.loadGameFile(GAME_RESOURCE_FOLDER + "Chess.txt");
+            parser.loadGameFile(GAME_RESOURCE_FOLDER + "Atomic.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
