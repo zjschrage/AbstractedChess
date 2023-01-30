@@ -9,8 +9,8 @@ import java.util.List;
 
 public class Remove extends Action {
 
-    public Remove(ActionType actionType, List<Object> args) {
-        super(actionType, args);
+    public Remove(List<Object> args) {
+        super(args);
     }
 
     @Override

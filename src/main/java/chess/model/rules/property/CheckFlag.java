@@ -11,8 +11,8 @@ import java.util.List;
 
 public class CheckFlag extends Property {
 
-    public CheckFlag(PropertyType propertyType, List<Object> args) {
-        super(propertyType, args);
+    public CheckFlag(List<Object> args) {
+        super(args);
     }
 
     @Override

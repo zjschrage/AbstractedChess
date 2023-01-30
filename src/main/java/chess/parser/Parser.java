@@ -152,8 +152,8 @@ public class Parser {
         String propertySymbol = line.substring(declaration, operator).trim();
         String[] args = getArgs(line, LEFT_BRACKET, RIGHT_BRACKET);
         PropertyType pt = PropertyType.valueOf(((String)args[0]).trim());
-        Class<?>[] paramTypes = {PropertyType.class, List.class};
-        Object[] params = {pt, propertiesLister(args)};
+        Class<?>[] paramTypes = {List.class};
+        Object[] params = {propertiesLister(args)};
         Object p = null;
         try {
             p = InstanceFactory.createInstance(propertyClassReflector.get(pt), paramTypes, params);
@@ -169,8 +169,8 @@ public class Parser {
         String actionSymbol = line.substring(declaration, operator).trim();
         Object[] args = getObjectArgs(line);
         ActionType at = ActionType.valueOf(((String)args[0]).trim());
-        Class<?>[] paramTypes = {ActionType.class, List.class};
-        Object[] params = {at, propertiesLister(args)};
+        Class<?>[] paramTypes = {List.class};
+        Object[] params = {propertiesLister(args)};
         Object a = null;
         try {
             a = InstanceFactory.createInstance(actionClassReflector.get(at), paramTypes, params);

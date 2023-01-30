@@ -8,11 +8,9 @@ import chess.model.piece.Piece;
 
 public abstract class Action {
 
-    protected ActionType actionType;
     protected List<Object> args;
     
-    public Action(ActionType actionType, List<Object> args) {
-        this.actionType = actionType;
+    public Action(List<Object> args) {
         this.args = args;
     }
 
@@ -24,6 +22,6 @@ public abstract class Action {
     }
 
     public String toString() {
-        return String.format("[type=%s, args=%s]", actionType.toString(), args.toString());
+        return String.format("[type=%s, args=%s]", "x", args.toString());
     }
 }

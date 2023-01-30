@@ -10,8 +10,8 @@ import java.util.List;
 
 public class SetFlag extends Action {
 
-    public SetFlag(ActionType actionType, List<Object> args) {
-        super(actionType, args);
+    public SetFlag(List<Object> args) {
+        super(args);
     }
 
     @Override

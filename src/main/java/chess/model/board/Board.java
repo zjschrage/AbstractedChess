@@ -51,7 +51,6 @@ public class Board {
         board.get(to).placePiece(board.get(from).pickUpPiece());
         List<Action> moveActions = feasibleMoves.get(to);
         if (moveActions != null) actions.addAll(moveActions);
-        if (actions.size() == 0) return true;
         for (Action a : actions) {
             a.execute(to, this);
         }

@@ -9,8 +9,8 @@ import java.util.List;
 
 public class TimesMoved extends Property {
 
-    public TimesMoved(PropertyType propertyType, List<Object> args) {
-        super(propertyType, args);
+    public TimesMoved(List<Object> args) {
+        super(args);
     }
 
     @Override
@@ -19,13 +19,13 @@ public class TimesMoved extends Property {
         if (p == null) return false;
         if (pt.relativeNeighbor != null) {
             Coordinate targetCord = new Coordinate(c.x() + pt.relativeNeighbor.xVector(), c.y() + pt.relativeNeighbor.yVector());
-            Piece target = getPiece(targetCord, b);
-            if (target == null) return false;
-            if (pt.friendly && p.getTID().playerId != target.getTID().playerId) return false;
-            if (pt.enemy && p.getTID().playerId == target.getTID().playerId) return false;
-            if (pt.type == target.getTID().id) return false;
-            return (target.getTimesMoved() == Integer.parseInt((String)args.get(0)));
+            p = getPiece(targetCord, b);
+            if (p == null) return false;
         }
         return (p.getTimesMoved() == Integer.parseInt((String)args.get(0)));
     }
 }
+
+//            if (pt.friendly && p.getTID().playerId != target.getTID().playerId) return false;
+//            if (pt.enemy && p.getTID().playerId == target.getTID().playerId) return false;
+//            if (pt.type == target.getTID().id) return false;

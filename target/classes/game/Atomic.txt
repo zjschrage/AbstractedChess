@@ -5,7 +5,7 @@
 %Q
 %K
 
-?rnbqkbnr/pppppppp/8/3N4/8/8/PPPPPPPP/RNBQKBNR
+?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
 $K1 = [-1, -1 ,1]
 $K2 = [-1, 1 ,1]

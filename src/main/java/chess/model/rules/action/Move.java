@@ -11,9 +11,8 @@ import java.util.Optional;
 
 public class Move extends Action {
 
-    public Move(ActionType actionType, List<Object> args) {
-        super(actionType, args);
-        System.out.println(this.getClass().getName());
+    public Move(List<Object> args) {
+        super(args);
     }
 
     @Override

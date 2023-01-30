@@ -9,11 +9,9 @@ import chess.model.piece.PieceType;
 
 public abstract class Property {
 
-    protected PropertyType propertyType;
     protected List<Object> args;
     
-    public Property(PropertyType propertyType, List<Object> args) {
-        this.propertyType = propertyType;
+    public Property(List<Object> args) {
         this.args = args;
     }
 
@@ -25,7 +23,7 @@ public abstract class Property {
     }
 
     public String toString() {
-        return String.format("[type=%s, args=%s]", propertyType.toString(), args.toString());
+        return String.format("[args=%s]", args.toString());
     }
 
 }
