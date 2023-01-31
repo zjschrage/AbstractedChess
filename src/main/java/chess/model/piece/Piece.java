@@ -38,7 +38,8 @@ public class Piece {
                 if (!board.checkInBounds(c) || step > rep) break;
                 Piece piece = board.getBoard().get(c).getPiece();
                 if (piece != null && piece.behavior.getTID().playerId == behavior.getTID().playerId) break; //No self capture
-                feasableMoves.put(c, behavior.getActions().get(mp));
+                if (feasableMoves.get(c) == null) feasableMoves.put(c, behavior.getActions().get(mp));
+                else feasableMoves.get(c).addAll(behavior.getActions().get(mp));
                 if (piece != null && piece.behavior.getTID().playerId != behavior.getTID().playerId) break; //No movement through
                 step++;
             }

@@ -1,0 +1,81 @@
+%C
+
+//?1c1c1c1c/c1c1c1c1/1c1c1c1c/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
+?1c5c/4C3/8/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
+
+//Checker
+
+$La = [-1, 1, 1]
+$Ra = [1, 1, 1]
+$Lb = [-1, -1, 1]
+$Rb = [1, -1, 1]
+
+$JLa = [-2, 2, 1]
+$JRa = [2, 2, 1]
+$JLb = [-2, -2, 1]
+$JRb = [2, -2, 1]
+
+#LaFoe  = (~, <-, La>, ~)
+#RaFoe  = (~, <-, Ra>, ~)
+#LbFoe  = (~, <-, Lb>, ~)
+#RbFoe  = (~, <-, Rb>, ~)
+
+!captureLa = [REMOVE, Rb];
+!captureRa = [REMOVE, Lb];
+!captureLb = [REMOVE, Ra];
+!captureRb = [REMOVE, La];
+
+C.cannot(La, LaFoe)
+C.cannot(Ra, RaFoe)
+C.must(JLa, LaFoe)
+C.action(JLa, captureLa)
+C.must(JRa, RaFoe)
+C.action(JRa, captureRa)
+
+c.cannot(Lb, LbFoe)
+c.cannot(Rb, RbFoe)
+c.must(JLb, LbFoe)
+c.action(JLb, captureLb)
+c.must(JRb, RbFoe)
+c.action(JRb, captureRb)
+
+!setKing = [SET_FLAG, 0, 1, 1000];
+&checkPromoteBlack = [CHECK_CORD, *, 1]
+&checkPromoteWhite = [CHECK_CORD, *, 6]
+#CPBlack  = (~, ~, </, checkPromoteBlack>)
+#CPWhite  = (~, ~, </, checkPromoteWhite>)
+
+$LaPromote = [-1, 1, 1]
+$RaPromote = [1, 1, 1]
+$LbPromote = [-1, -1, 1]
+$RbPromote = [1, -1, 1]
+
+C.cannot(LaPromote, LaFoe)
+C.must(LaPromote, CPWhite)
+C.action(LaPromote, setKing)
+
+C.cannot(RaPromote, RaFoe)
+C.must(RaPromote, CPWhite)
+C.action(RaPromote, setKing)
+
+c.cannot(LbPromote, LbFoe)
+c.must(LbPromote, CPBlack)
+c.action(LbPromote, setKing)
+
+c.cannot(RbPromote, RbFoe)
+c.must(RbPromote, CPBlack)
+c.action(RbPromote, setKing)
+
+&checkKing = [CHECK_FLAG, 0, 1]
+#isKing = (~, ~, </, checkKing>)
+
+C.cannot(Lb, LbFoe)
+C.must(Lb, isKing)
+C.cannot(Rb, RbFoe)
+C.must(Rb, isKing)
+
+c.cannot(La, LaFoe)
+c.must(La, isKing)
+c.cannot(Ra, RaFoe)
+c.must(Ra, isKing)
+

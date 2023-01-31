@@ -2,28 +2,31 @@ package chess.model.rules.property;
 
 import chess.model.board.Board;
 import chess.model.board.Coordinate;
-import chess.model.piece.Flag;
 import chess.model.piece.Piece;
 import chess.model.piece.PieceType;
-import chess.model.play.PlayManager;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
-public class CheckFlag extends Property {
+public class CheckCord extends Property {
 
-    public CheckFlag(List<Object> args) {
+    public CheckCord(List<Object> args) {
         super(args);
     }
-
     @Override
     public boolean verifyProperty(PieceType pt, Coordinate c, Board b) {
+        int x = -1;
+        int y = -1;
+        String xStr = (String)args.get(0);
+        String yStr = (String)args.get(1);
+        if (!xStr.equals("*")) x = Integer.parseInt(xStr);
+        if (!yStr.equals("*")) y = Integer.parseInt(yStr);
+
         if (pt.relativeNeighbor != null) c = new Coordinate(c.x() + pt.relativeNeighbor.xVector(), c.y() + pt.relativeNeighbor.yVector());
         Piece p = getPiece(c, b);
         if (p == null) return false;
-        Flag f = p.getFlags().get(Integer.parseInt((String) args.get(0)));
-        if (f == null) return false;
-        if (!f.isActive(PlayManager.turn)) return false;
-        return (f.getValue() == Integer.parseInt((String) args.get(1)));
+
+        return (x == -1 || x == c.x()) && (y == -1 || y == c.y());
     }
 
 }

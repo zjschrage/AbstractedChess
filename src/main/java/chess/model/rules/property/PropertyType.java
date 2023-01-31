@@ -4,4 +4,5 @@ public enum PropertyType {
     TIMES_MOVED,
     TURNS_AGO_MOVED,
     CHECK_FLAG,
+    CHECK_CORD,
 }

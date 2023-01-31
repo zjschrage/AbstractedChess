@@ -39,8 +39,4 @@ public class PieceStatistics {
         return lastTurnNumberMoved;
     }
 
-    public Map<Integer, Piece> getCaptureList() {
-        return captureList;
-    }
-
 }

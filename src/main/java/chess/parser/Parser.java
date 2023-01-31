@@ -376,6 +376,7 @@ public class Parser {
         propertyClassReflector.put(PropertyType.CHECK_FLAG, "chess.model.rules.property.CheckFlag");
         propertyClassReflector.put(PropertyType.TIMES_MOVED, "chess.model.rules.property.TimesMoved");
         propertyClassReflector.put(PropertyType.TURNS_AGO_MOVED, "chess.model.rules.property.TurnsAgoMoved");
+        propertyClassReflector.put(PropertyType.CHECK_CORD, "chess.model.rules.property.CheckCord");
     }
 
     private void initActionClassReflector() {
