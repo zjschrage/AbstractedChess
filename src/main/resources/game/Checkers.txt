@@ -20,6 +20,11 @@ $JRb = [2, -2, 1]
 #LbFoe  = (~, <-, Lb>, ~)
 #RbFoe  = (~, <-, Rb>, ~)
 
+#JLaFoe  = (~, <-, JLa>, ~)
+#JRaFoe  = (~, <-, JRa>, ~)
+#JLbFoe  = (~, <-, JLb>, ~)
+#JRbFoe  = (~, <-, JRb>, ~)
+
 !captureLa = [REMOVE, Rb];
 !captureRa = [REMOVE, Lb];
 !captureLb = [REMOVE, Ra];
@@ -30,16 +35,22 @@ C.cannot(Ra, RaFoe)
 
 C.must(JLa, LaFoe)
 C.action(JLa, captureLa)
+C.cannot(JLa, JLaFoe)
+
 C.must(JRa, RaFoe)
 C.action(JRa, captureRa)
+C.cannot(JRa, JRaFoe)
 
 c.cannot(Lb, LbFoe)
 c.cannot(Rb, RbFoe)
 
 c.must(JLb, LbFoe)
 c.action(JLb, captureLb)
+c.cannot(JLb, JLbFoe)
+
 c.must(JRb, RbFoe)
 c.action(JRb, captureRb)
+c.cannot(JRb, JRbFoe)
 
 //Promoting
 

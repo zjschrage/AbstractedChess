@@ -10,10 +10,7 @@ import chess.model.play.PlayManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
-import java.util.List;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
@@ -34,6 +31,7 @@ public class BoardPanel extends JLayeredPane {
     private int pieceSize;
     private Map<Coordinate, TileView> tileViewMap;
     private Map<Piece, PieceView> pieceViewMap;
+    private Map<Character, BufferedImage> pieceImageMap;
     private PlayManager pm;
 
     public BoardPanel(Assets a, Board b, Dimension d) {
@@ -43,6 +41,8 @@ public class BoardPanel extends JLayeredPane {
         marginSize = new Dimension(d.x()/10, d.y()/10);
         tileSize = Math.min((d.x() - 2*marginSize.x())/b.getDimension().x(), (d.y() - 2*marginSize.y())/b.getDimension().y());
         pieceSize = (int)(tileSize * PIECE_TILE_SCALE);
+        loadPieceImageAssets();
+        generateBackground();
         generatePieceViews();
         generateTileViews();
         pm = new PlayManager(b);
@@ -104,10 +104,7 @@ public class BoardPanel extends JLayeredPane {
             for (int j = 0; j < b.getDimension().x(); j++) {
                 Piece p = getPieceAtCoordinate(new Coordinate(i, j));
                 if (p != null) {
-                    char c = getCharFromPiece(p);
-                    BufferedImage image = a.getImage(c);
-                    image = imgTobufImg(image.getScaledInstance(pieceSize, pieceSize, SCALE_DEFAULT));
-                    PieceView pv = new PieceView(p, this, image);
+                    PieceView pv = new PieceView(p, this, pieceImageMap.get(getCharFromPiece(p)));
                     pv.setLocation(tileSize * i + marginSize.x() + (tileSize - pieceSize)/2, tileSize * (b.getDimension().y() - 1 - j) + marginSize.y() + (tileSize - pieceSize)/2);
                     pv.setSize(pieceSize, pieceSize);
                     add(pv);
@@ -124,6 +121,21 @@ public class BoardPanel extends JLayeredPane {
         }
     }
 
+    private void loadPieceImageAssets() {
+        pieceImageMap = new HashMap<>();
+        for (int i = 0; i < b.getDimension().y(); i++) {
+            for (int j = 0; j < b.getDimension().x(); j++) {
+                Piece p = getPieceAtCoordinate(new Coordinate(i, j));
+                if (p != null) {
+                    char c = getCharFromPiece(p);
+                    BufferedImage image = a.getImage(c);
+                    image = imgTobufImg(image.getScaledInstance(pieceSize, pieceSize, SCALE_DEFAULT));
+                    pieceImageMap.put(c, image);
+                }
+            }
+        }
+    }
+
     private BufferedImage imgTobufImg(Image img) {
         BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
         Graphics2D bGr = bimage.createGraphics();
@@ -131,4 +143,14 @@ public class BoardPanel extends JLayeredPane {
         bGr.dispose();
         return bimage;
     }
+
+    private void generateBackground() {
+        int backgroundSize = Math.max(boardSize.x(), boardSize.y());
+        TileView bv = new TileView(Color.BLACK, backgroundSize);
+        bv.setLocation(0, 0);
+        bv.setSize(backgroundSize, backgroundSize);
+        add(bv);
+        setLayer(bv, -2);
+    }
+
 }
