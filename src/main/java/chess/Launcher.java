@@ -3,9 +3,13 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import chess.model.board.Board;
+import chess.model.board.Dimension;
 import chess.model.piece.Piece;
 import chess.model.play.PlayManager;
 import chess.parser.Parser;
+import chess.view.Assets;
+import chess.view.BoardView;
+import chess.view.ImageLoader;
 
 public class Launcher {
 
@@ -23,6 +27,16 @@ public class Launcher {
         b.print();
 
         PlayManager pm = new PlayManager(b);
+        gui(pm, b);
+    }
+
+    public static void gui(PlayManager pm, Board b) {
+        Assets a = new Assets();
+        ImageLoader il = new ImageLoader(a);
+        BoardView bv = new BoardView(a, b, new Dimension(750, 750));
+    }
+
+    public static void console(PlayManager pm, Board b) {
         Scanner scan = new Scanner(System.in);
         boolean run = true;
         while(run) {

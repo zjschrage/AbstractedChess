@@ -57,6 +57,8 @@ public class Board {
         return true;
     }
 
+    public Dimension getDimension() { return dimension; }
+
     public String getFEN() {
         return fenSerializer.getFen(this);
     }

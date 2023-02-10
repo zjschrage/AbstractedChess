@@ -15,8 +15,6 @@ public class Remove extends Action {
 
     @Override
     public void execute(Coordinate c, Board b) {
-//        Piece p = getPiece(c, b);
-//        if (p == null) return;
         MovementPattern vec = MovementPattern.class.cast(args.get(0));
         Coordinate rem = new Coordinate(c.x() + vec.xVector(), c.y() + vec.yVector());
         Piece remPiece = getPiece(rem, b);

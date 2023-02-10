@@ -1,7 +1,7 @@
 %C
 
-//?1c1c1c1c/c1c1c1c1/1c1c1c1c/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
-?1c5c/4C3/8/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
+?1c1c1c1c/c1c1c1c1/1c1c1c1c/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
+//?1c5c/4C3/8/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
 
 //Checker
 
@@ -27,6 +27,7 @@ $JRb = [2, -2, 1]
 
 C.cannot(La, LaFoe)
 C.cannot(Ra, RaFoe)
+
 C.must(JLa, LaFoe)
 C.action(JLa, captureLa)
 C.must(JRa, RaFoe)
@@ -34,10 +35,13 @@ C.action(JRa, captureRa)
 
 c.cannot(Lb, LbFoe)
 c.cannot(Rb, RbFoe)
+
 c.must(JLb, LbFoe)
 c.action(JLb, captureLb)
 c.must(JRb, RbFoe)
 c.action(JRb, captureRb)
+
+//Promoting
 
 !setKing = [SET_FLAG, 0, 1, 1000];
 &checkPromoteBlack = [CHECK_CORD, *, 1]
