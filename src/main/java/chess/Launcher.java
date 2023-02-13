@@ -24,7 +24,7 @@ public class Launcher {
             e.printStackTrace();
         }
         Board b = parser.generateBoard();
-        b.print();
+        //b.print();
 
         PlayManager pm = new PlayManager(b);
         gui(pm, b);

@@ -40,6 +40,7 @@ public class BoardPanel extends JLayeredPane {
         this.boardSize = d;
         marginSize = new Dimension(d.x()/10, d.y()/10);
         tileSize = Math.min((d.x() - 2*marginSize.x())/b.getDimension().x(), (d.y() - 2*marginSize.y())/b.getDimension().y());
+        marginSize = new Dimension((d.x()-tileSize*b.getDimension().y())/2, (d.y()-tileSize*b.getDimension().x())/2);
         pieceSize = (int)(tileSize * PIECE_TILE_SCALE);
         loadPieceImageAssets();
         generateBackground();
@@ -72,16 +73,17 @@ public class BoardPanel extends JLayeredPane {
 
     private void generateTileViews() {
         tileViewMap = new HashMap<>();
-        for (int i = 0; i < b.getDimension().y(); i++) {
-            for (int j = 0; j < b.getDimension().x(); j++) {
+        for (int i = 0; i < b.getDimension().x(); i++) { //row
+            for (int j = 0; j < b.getDimension().y(); j++) { //col
                 TileView tv;
+                Coordinate c = new Coordinate(j,i);
                 if ((i + j) % 2 == 1) tv = new TileView(TILE_A_COLOR, tileSize);
                 else tv = new TileView(TILE_B_COLOR, tileSize);
-                tv.setLocation(tileSize * i + marginSize.x(), tileSize * (b.getDimension().y() - 1 - j) + marginSize.y());
+                tv.setLocation(tileSize * j + marginSize.x(), tileSize * (b.getDimension().x() - 1 - i) + marginSize.y());
                 tv.setSize(tileSize, tileSize);
                 add(tv);
                 setLayer(tv, -1);
-                tileViewMap.put(new Coordinate(i, j), tv);
+                tileViewMap.put(c, tv);
             }
         }
     }
@@ -100,12 +102,12 @@ public class BoardPanel extends JLayeredPane {
 
     private void generatePieceViews() {
         pieceViewMap = new HashMap<>();
-        for (int i = 0; i < b.getDimension().y(); i++) {
-            for (int j = 0; j < b.getDimension().x(); j++) {
-                Piece p = getPieceAtCoordinate(new Coordinate(i, j));
+        for (int i = 0; i < b.getDimension().x(); i++) {
+            for (int j = 0; j < b.getDimension().y(); j++) {
+                Piece p = getPieceAtCoordinate(new Coordinate(j, i)); //col row
                 if (p != null) {
                     PieceView pv = new PieceView(p, this, pieceImageMap.get(getCharFromPiece(p)));
-                    pv.setLocation(tileSize * i + marginSize.x() + (tileSize - pieceSize)/2, tileSize * (b.getDimension().y() - 1 - j) + marginSize.y() + (tileSize - pieceSize)/2);
+                    pv.setLocation(tileSize * j + marginSize.x() + (tileSize - pieceSize)/2, tileSize * (b.getDimension().x() - 1 - i) + marginSize.y() + (tileSize - pieceSize)/2);
                     pv.setSize(pieceSize, pieceSize);
                     add(pv);
                     setLayer(pv, 0);
@@ -123,9 +125,9 @@ public class BoardPanel extends JLayeredPane {
 
     private void loadPieceImageAssets() {
         pieceImageMap = new HashMap<>();
-        for (int i = 0; i < b.getDimension().y(); i++) {
-            for (int j = 0; j < b.getDimension().x(); j++) {
-                Piece p = getPieceAtCoordinate(new Coordinate(i, j));
+        for (int i = 0; i < b.getDimension().x(); i++) { //row
+            for (int j = 0; j < b.getDimension().y(); j++) { //col
+                Piece p = getPieceAtCoordinate(new Coordinate(j, i)); //(col row)
                 if (p != null) {
                     char c = getCharFromPiece(p);
                     BufferedImage image = a.getImage(c);

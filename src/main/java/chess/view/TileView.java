@@ -1,5 +1,7 @@
 package chess.view;
 
+import chess.model.board.Coordinate;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;

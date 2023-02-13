@@ -4,8 +4,10 @@
 %R
 %Q
 %K
+%C
+%S
 
-?rnbqkbnr/pppppppp/8/8/8/8/8/1P6/8/8/8/PPPPPPPP/RNBQKBNR
+?rnbcsqkscbnr/pppppppppppp/93/93/93/93/93/PPPPPPPPPPPP/RNBCSQKSCBNR
 
 //Knight
 
@@ -61,6 +63,36 @@ Q.both.does(R1)
 Q.both.does(R2)
 Q.both.does(R3)
 Q.both.does(R4)
+
+//Chancellor
+
+C.both.does(R1)
+C.both.does(R2)
+C.both.does(R3)
+C.both.does(R4)
+C.both.does(N1)
+C.both.does(N2)
+C.both.does(N3)
+C.both.does(N4)
+C.both.does(N5)
+C.both.does(N6)
+C.both.does(N7)
+C.both.does(N8)
+
+//Princess
+
+S.both.does(B1)
+S.both.does(B2)
+S.both.does(B3)
+S.both.does(B4)
+S.both.does(N1)
+S.both.does(N2)
+S.both.does(N3)
+S.both.does(N4)
+S.both.does(N5)
+S.both.does(N6)
+S.both.does(N7)
+S.both.does(N8)
 
 //King
 

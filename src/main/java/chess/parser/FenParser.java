@@ -35,6 +35,7 @@ public class FenParser {
      */
     public Dimension getDimensions(String fen) {
         String[] rows = fen.split("" + FEN_DELIMETER);
+        System.out.println(rows.length + " " + getWidth(rows[0]));
         return new Dimension(rows.length, getWidth(rows[0]));
     }
 

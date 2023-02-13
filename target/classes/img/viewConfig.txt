@@ -17,4 +17,14 @@ a 1 p 1695 330 190 275
 a 1 C 1695 0 190 275
 a 1 c 1695 330 190 275
 
+s Chancellor.png 2
+s Princess.png 3
+s ChancellorB.png 4
+s PrincessB.png 5
+
+a 2 C 0 0 45 45
+a 3 S 0 0 45 45
+a 4 c 0 0 45 45
+a 5 s 0 0 45 45
+
 

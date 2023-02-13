@@ -24,7 +24,7 @@ public class Board {
         this.dimension = d;
         for (int i = 0; i < d.x(); i++) {
             for (int j = 0; j < d.y(); j++) {
-                board.put(new Coordinate(i, j), new Tile());
+                board.put(new Coordinate(j, i), new Tile());
             }
         }
         for (Piece p : pieces.keySet()) {
@@ -39,7 +39,7 @@ public class Board {
     }
 
     public boolean checkInBounds(Coordinate c) {
-        return (c.x() >= 0 && c.x() < dimension.x() && c.y() >= 0 && c.y() < dimension.y());
+        return (c.x() >= 0 && c.x() < dimension.y() && c.y() >= 0 && c.y() < dimension.x());
     }
 
     public boolean move(Coordinate from, Coordinate to) {
