@@ -19,12 +19,11 @@ public class Launcher {
 
         Parser parser = new Parser();
         try {
-            parser.loadGameFile(GAME_RESOURCE_FOLDER + "Chess.txt");
+            parser.loadGameFile(GAME_RESOURCE_FOLDER + "Chess2.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
         Board b = parser.generateBoard();
-        //b.print();
 
         PlayManager pm = new PlayManager(b);
         gui(pm, b);
@@ -33,7 +32,7 @@ public class Launcher {
     public static void gui(PlayManager pm, Board b) {
         Assets a = new Assets();
         ImageLoader il = new ImageLoader(a);
-        BoardView bv = new BoardView(a, b, new Dimension(750, 750));
+        BoardView bv = new BoardView(a, b, new Dimension(1200, 800));
     }
 
     public static void console(PlayManager pm, Board b) {

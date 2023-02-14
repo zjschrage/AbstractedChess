@@ -22,6 +22,7 @@ public class BoardPanel extends JLayeredPane {
     private static double PIECE_TILE_SCALE = 0.85;
     private static Color TILE_A_COLOR = new Color(230, 138, 0);
     private static Color TILE_B_COLOR = new Color(255, 255, 230);
+    private static double DEFAULT_MARGIN_PROPORTION = 0.2;
 
     private Assets a;
     private Board b;
@@ -38,8 +39,7 @@ public class BoardPanel extends JLayeredPane {
         this.a = a;
         this.b = b;
         this.boardSize = d;
-        marginSize = new Dimension(d.x()/10, d.y()/10);
-        tileSize = Math.min((d.x() - 2*marginSize.x())/b.getDimension().x(), (d.y() - 2*marginSize.y())/b.getDimension().y());
+        tileSize = (int)(Math.min(d.x()/b.getDimension().x(), d.y()/b.getDimension().y()) * visualScale(b.getDimension()));
         marginSize = new Dimension((d.x()-tileSize*b.getDimension().y())/2, (d.y()-tileSize*b.getDimension().x())/2);
         pieceSize = (int)(tileSize * PIECE_TILE_SCALE);
         loadPieceImageAssets();
@@ -47,6 +47,13 @@ public class BoardPanel extends JLayeredPane {
         generatePieceViews();
         generateTileViews();
         pm = new PlayManager(b);
+    }
+
+    private double visualScale(Dimension d) {
+        double r = ((double)Math.abs(d.x() - d.y()))/Math.max(d.x(), d.y());
+        //0 -> (1 - default margin proportion)
+        //1 -> (0: no margin proportion)
+        return (1 - DEFAULT_MARGIN_PROPORTION) + (Math.log10(10*r + 1) * DEFAULT_MARGIN_PROPORTION);
     }
 
     public void checkMovement(Piece piece, Coordinate mouse) {

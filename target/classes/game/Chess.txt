@@ -5,7 +5,7 @@
 %Q
 %K
 
-?rnbqkbnr/pppppppp/8/8/8/8/8/1P6/8/8/8/PPPPPPPP/RNBQKBNR
+?rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
 //Knight
 
