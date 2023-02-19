@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import chess.model.rules.action.Action;
-import chess.model.rules.Condition;
+import chess.model.rules.condition.Condition;
 import chess.model.rules.MovementPattern;
 
 public class PieceBehavior {

@@ -5,7 +5,7 @@ import java.util.*;
 import chess.model.board.Board;
 import chess.model.board.Coordinate;
 import chess.model.rules.action.Action;
-import chess.model.rules.Condition;
+import chess.model.rules.condition.Condition;
 import chess.model.rules.MovementPattern;
 
 public class Piece {

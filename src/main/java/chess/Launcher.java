@@ -19,7 +19,7 @@ public class Launcher {
 
         Parser parser = new Parser();
         try {
-            parser.loadGameFile(GAME_RESOURCE_FOLDER + "Chess2.txt");
+            parser.loadGameFile(GAME_RESOURCE_FOLDER + "ChessUpdated.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

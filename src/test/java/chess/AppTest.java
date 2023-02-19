@@ -27,7 +27,7 @@ public class AppTest {
     public static void globalInit() {
         parser = new Parser();
         try {
-            parser.loadGameFile(Launcher.GAME_RESOURCE_FOLDER + "Chess.txt");
+            parser.loadGameFile(Launcher.GAME_RESOURCE_FOLDER + "ChessUpdated.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

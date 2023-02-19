@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +14,7 @@ import java.util.AbstractMap.SimpleEntry;
 
 import chess.model.rules.action.Action;
 import chess.model.rules.action.ActionType;
-import chess.model.rules.Condition;
+import chess.model.rules.condition.Condition;
 import chess.model.board.Board;
 import chess.model.board.Coordinate;
 import chess.model.piece.PieceBehavior;
@@ -24,6 +22,7 @@ import chess.model.piece.PieceType;
 import chess.model.piece.PieceTypeID;
 import chess.model.piece.Player;
 import chess.model.rules.MovementPattern;
+import chess.model.rules.condition.ConditionType;
 import chess.model.rules.property.Property;
 import chess.model.rules.property.PropertyType;
 import chess.utils.InstanceFactory;
@@ -42,6 +41,8 @@ public class Parser {
     private final Map<String, Action> actionTable;
     private final Map<ActionType, String> actionClassReflector;
     private final Map<PropertyType, String> propertyClassReflector;
+    private final Map<ConditionType, String> conditionClassReflector;
+    private final Map<ConditionType, Map<String, ?>> conditionClassTableMapper;
     private String fen;
 
     /**
@@ -61,10 +62,14 @@ public class Parser {
         actionTable = new HashMap<>();
         actionClassReflector = new HashMap<>();
         propertyClassReflector = new HashMap<>();
+        conditionClassReflector = new HashMap<>();
+        conditionClassTableMapper = new HashMap<>();
         initFunctionTable();
         initSymbolTable();
         initActionClassReflector();
         initPropertyClassReflector();
+        initConditionClassReflector();
+        initConditionTableMapper();
     }
 
     /**
@@ -131,19 +136,41 @@ public class Parser {
         coordinateTable.put(coordinateSymbol, new Coordinate(stoi(args[0]), stoi(args[1])));
     }
 
+//    private void conditionDeclaration(String line) {
+//        int declaration = line.indexOf(CONDITION_DECLARATOR) + 1;
+//        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
+//        String conditionSymbol = line.substring(declaration, operator).trim();
+//        conditionTable.putIfAbsent(conditionSymbol, new Condition(new HashMap<>(), new HashMap<>(), new HashMap<>()));
+//        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
+//        args = reconstructedArgs(args);
+//        Optional<SimpleEntry<PieceType, Coordinate>> absoluteCondition = parseConditionEntry(args[0].trim(), coordinateTable);
+//        Optional<SimpleEntry<PieceType, MovementPattern>> relativeCondition = parseConditionEntry(args[1].trim(), vectorTable);
+//        Optional<SimpleEntry<PieceType, Property>> propertyCondition = parseConditionEntry(args[2].trim(), propertyTable);
+//        absoluteCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addAbsoluteCondition(e));
+//        relativeCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addRelativeCondition(e));
+//        propertyCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addPropertyCondition(e));
+//    }
+
     private void conditionDeclaration(String line) {
         int declaration = line.indexOf(CONDITION_DECLARATOR) + 1;
         int operator = line.indexOf(ASSIGNMENT_OPERATOR);
         String conditionSymbol = line.substring(declaration, operator).trim();
-        conditionTable.putIfAbsent(conditionSymbol, new Condition(new HashMap<>(), new HashMap<>(), new HashMap<>()));
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
         args = reconstructedArgs(args);
-        Optional<SimpleEntry<PieceType, Coordinate>> absoluteCondition = parseConditionEntry(args[0].trim(), coordinateTable);
-        Optional<SimpleEntry<PieceType, MovementPattern>> relativeCondition = parseConditionEntry(args[1].trim(), vectorTable);
-        Optional<SimpleEntry<PieceType, Property>> propertyCondition = parseConditionEntry(args[2].trim(), propertyTable);
-        absoluteCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addAbsoluteCondition(e));
-        relativeCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addRelativeCondition(e));
-        propertyCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addPropertyCondition(e));
+
+        ConditionType ct = ConditionType.valueOf(((String)args[0]).trim());
+        Class<?>[] paramTypes = {};
+        Object[] params = {};
+        Object c = null;
+        try {
+            c = InstanceFactory.createInstance(conditionClassReflector.get(ct), paramTypes, params);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        conditionTable.put(conditionSymbol, Condition.class.cast(c));
+
+        Optional<? extends SimpleEntry<PieceType, ?>> condition = parseConditionEntry(args[1].trim(), conditionClassTableMapper.get(ct));
+        condition.ifPresent(e -> conditionTable.get(conditionSymbol).addSubCondition(e));
     }
 
     private void propertyDeclaration(String line) {
@@ -180,8 +207,21 @@ public class Parser {
         actionTable.put(actionSymbol, Action.class.cast(a));
     }
 
+//    private String[] reconstructedArgs(String[] args) {
+//        String[] reconstructedArgs = new String[3];
+//        int fixedArgs = 0;
+//        for (int i = 0; i < args.length; i++) {
+//            if (args[i].trim().charAt(0) == LEFT_CARROT) {
+//                reconstructedArgs[fixedArgs++] = args[i] + COMMA + args[i+1];
+//                i++;
+//            }
+//            else reconstructedArgs[fixedArgs++] = args[i];
+//        }
+//        return reconstructedArgs;
+//    }
+
     private String[] reconstructedArgs(String[] args) {
-        String[] reconstructedArgs = new String[3];
+        String[] reconstructedArgs = new String[2];
         int fixedArgs = 0;
         for (int i = 0; i < args.length; i++) {
             if (args[i].trim().charAt(0) == LEFT_CARROT) {
@@ -383,6 +423,18 @@ public class Parser {
         actionClassReflector.put(ActionType.SET_FLAG, "chess.model.rules.action.SetFlag");
         actionClassReflector.put(ActionType.MOVE, "chess.model.rules.action.Move");
         actionClassReflector.put(ActionType.REMOVE, "chess.model.rules.action.Remove");
+    }
+
+    private void initConditionClassReflector() {
+        conditionClassReflector.put(ConditionType.ABSOLUTE, "chess.model.rules.condition.AbsoluteCondition");
+        conditionClassReflector.put(ConditionType.RELATIVE, "chess.model.rules.condition.RelativeCondition");
+        conditionClassReflector.put(ConditionType.PROPERTY, "chess.model.rules.condition.PropertyCondition");
+    }
+
+    private void initConditionTableMapper() {
+        conditionClassTableMapper.put(ConditionType.ABSOLUTE, coordinateTable);
+        conditionClassTableMapper.put(ConditionType.RELATIVE, vectorTable);
+        conditionClassTableMapper.put(ConditionType.PROPERTY, propertyTable);
     }
 
     private int stoi(String s) {
