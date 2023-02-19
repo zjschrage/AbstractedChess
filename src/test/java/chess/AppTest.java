@@ -186,4 +186,30 @@ public class AppTest {
         verify(game, fen);
     }
 
+    @Test
+    public void zjschrage_bullet_1() {
+        String fen = "3r1r1k/R2bqp2/2p1p3/8/P2P2Q1/1P3NP1/1P3PP1/2K4R";
+        String game = "1. d4 d5 2. Bf4 c6 3. e3 Nd7 4. Nf3 Ndf6 5. Bd3 h6 6. Nbd2 g5 7. Bg3 e6 8. Qe2 Bd6 " +
+                "9. e4 Bxg3 10. hxg3 dxe4 11. Nxe4 Nxe4 12. Qxe4 Nf6 13. Qe2 Bd7 14. Nxg5 Nd5 15. Nf3 Nb4 16. Qe5 Rf8 " +
+                "17. O-O-O Qe7 18. a3 Nxd3+ 19. Rxd3 a5 20. Rxh6 b5 21. Rd1 b4 22. a4 b3 23. cxb3 Qb4 24. Qe3 O-O-O " +
+                "25. Qc3 Qd6 26. Rh5 Qe7 27. Rxa5 Kc7 28. Ra7+ Kd6 29. Qb4+ Kd5 30. Qc4+ Ke4 31. Re1+ Kf5 " +
+                "32. Qd3+ Kf6 33. Qe4 Kg7 34. Qg4+ Kh8 35. Rh1+";
+        verify(game, fen);
+    }
+
+    @Test
+    public void zjschrage_bullet_2() {
+        String fen = "8/5P2/p7/6K1/2p3P1/8/Pk6/8";
+        String game = "1. d4 d5 2. Bf4 Nf6 3. e3 c5 4. Nf3 Nc6 5. c3 Nh5 6. Bg5 h6 7. Bh4 g5 8. Bg3 Nxg3 " +
+                "9. hxg3 Bg7 10. Bd3 e5 11. dxe5 Nxe5 12. Nxe5 Bxe5 13. Nd2 Bg7 14. Nf3 Be6 15. Qa4+ Qd7 " +
+                "16. Qxd7+ Kxd7 17. O-O-O Kc7 18. Bc2 Bg4 19. Bb3 c4 20. Bc2 Rad8 21. Rd4 Bxd4 22. Nxd4 Bd7 " +
+                "23. f3 f5 24. Bxf5 Bxf5 25. Nxf5 Rde8 26. Re1 h5 27. Nd4 h4 28. g4 a6 29. e4 h3 30. gxh3 Rxh3 " +
+                "31. e5 Rh6 32. e6 Re7 33. Re5 Rg6 34. Rxd5 b5 35. Rc5+ Kb7 36. Rf5 Rgxe6 37. Nxe6 Rxe6 38. Kd2 Rg6 " +
+                "39. Ke3 Kb6 40. Ke4 Kc6 41. Ke5 Rd6 42. Rf6 Rxf6 43. Kxf6 Kd5 44. Kxg5 b4 45. f4 bxc3 46. bxc3 Ke4 " +
+                "47. f5 Kd3 48. f6 Kxc3 49. f7 Kb2";
+        String gamepart2 = "50. f8=Q c3 51. Qb4+ Kc2 52. Qxc3+ Kxc3 53. Kf5 Kb2 54. g5 Kxa2" +
+                "55. g6 a5 56. g7 a4 57. g8=Q+ Kb2 58. Qg1 a3 59. Qf2+ Kb3 60. Qd2";
+        verify(game, fen);
+    }
+
 }

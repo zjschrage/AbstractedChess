@@ -32,7 +32,7 @@ public class Launcher {
     public static void gui(PlayManager pm, Board b) {
         Assets a = new Assets();
         ImageLoader il = new ImageLoader(a);
-        BoardView bv = new BoardView(a, b, new Dimension(1200, 800));
+        BoardView bv = new BoardView(a, b, new Dimension(800, 800));
     }
 
     public static void console(PlayManager pm, Board b) {
