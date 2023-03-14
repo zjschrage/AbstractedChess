@@ -59,9 +59,15 @@ public class FenParser {
     private List<SimpleEntry<Piece, Coordinate>> processRow(String s, int row) {
         List<SimpleEntry<Piece, Coordinate>> piecesOnRow = new ArrayList<>();
         int column = 0;
+        int countingColumn = 0;
         for (Character c : s.toCharArray()) {
-            if (Character.isDigit(c)) column += Character.getNumericValue(c);
+            if (Character.isDigit(c)) {
+                countingColumn *= 10;
+                countingColumn += Character.getNumericValue(c);
+            }
             else {
+                column += countingColumn;
+                countingColumn = 0;
                 Coordinate cord = new Coordinate(column, row);
                 PieceBehavior b = pieceTable.get(c);
                 piecesOnRow.add(new SimpleEntry<Piece,Coordinate>(new Piece(b, cord), cord));

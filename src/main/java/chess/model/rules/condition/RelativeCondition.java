@@ -7,8 +7,6 @@ import chess.model.piece.PieceType;
 import chess.model.piece.PieceTypeID;
 import chess.model.rules.MovementPattern;
 
-import java.util.Map;
-
 public class RelativeCondition extends Condition<MovementPattern> {
     public RelativeCondition() {
         super();

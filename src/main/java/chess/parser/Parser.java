@@ -136,21 +136,6 @@ public class Parser {
         coordinateTable.put(coordinateSymbol, new Coordinate(stoi(args[0]), stoi(args[1])));
     }
 
-//    private void conditionDeclaration(String line) {
-//        int declaration = line.indexOf(CONDITION_DECLARATOR) + 1;
-//        int operator = line.indexOf(ASSIGNMENT_OPERATOR);
-//        String conditionSymbol = line.substring(declaration, operator).trim();
-//        conditionTable.putIfAbsent(conditionSymbol, new Condition(new HashMap<>(), new HashMap<>(), new HashMap<>()));
-//        String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
-//        args = reconstructedArgs(args);
-//        Optional<SimpleEntry<PieceType, Coordinate>> absoluteCondition = parseConditionEntry(args[0].trim(), coordinateTable);
-//        Optional<SimpleEntry<PieceType, MovementPattern>> relativeCondition = parseConditionEntry(args[1].trim(), vectorTable);
-//        Optional<SimpleEntry<PieceType, Property>> propertyCondition = parseConditionEntry(args[2].trim(), propertyTable);
-//        absoluteCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addAbsoluteCondition(e));
-//        relativeCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addRelativeCondition(e));
-//        propertyCondition.ifPresent(e -> conditionTable.get(conditionSymbol).addPropertyCondition(e));
-//    }
-
     private void conditionDeclaration(String line) {
         int declaration = line.indexOf(CONDITION_DECLARATOR) + 1;
         int operator = line.indexOf(ASSIGNMENT_OPERATOR);
@@ -207,19 +192,6 @@ public class Parser {
         actionTable.put(actionSymbol, Action.class.cast(a));
     }
 
-//    private String[] reconstructedArgs(String[] args) {
-//        String[] reconstructedArgs = new String[3];
-//        int fixedArgs = 0;
-//        for (int i = 0; i < args.length; i++) {
-//            if (args[i].trim().charAt(0) == LEFT_CARROT) {
-//                reconstructedArgs[fixedArgs++] = args[i] + COMMA + args[i+1];
-//                i++;
-//            }
-//            else reconstructedArgs[fixedArgs++] = args[i];
-//        }
-//        return reconstructedArgs;
-//    }
-
     private String[] reconstructedArgs(String[] args) {
         String[] reconstructedArgs = new String[2];
         int fixedArgs = 0;
@@ -257,6 +229,7 @@ public class Parser {
         if (token.charAt(0) == SELF) p.selfInstance = true;
         if (vectorTable.containsKey(token)) p.relativeNeighbor = vectorTable.get(token);
         if (vectorTable.containsKey(token.substring(1))) p.relativeNeighbor = vectorTable.get(token.substring(1));
+        if (pieceTable.containsKey(token.charAt(0))) p.type = token.charAt(0);
         return p;
     }
 
@@ -341,9 +314,11 @@ public class Parser {
         char complementPiece = (char)(piece + ASCII_CASE_OFFSET);
         String[] args = getArgs(line, LEFT_PAREN, RIGHT_PAREN);
         Action captureA = actionTable.get(args[0].trim());
+        Condition conditionA = null;
+        if (args.length == 2) conditionA = conditionTable.get(args[1].trim());
         if (captureA != null) {
-            pieceTable.get(piece).addCaptureAction(captureA, null);
-            pieceTable.get(complementPiece).addCaptureAction(captureA, null);
+            pieceTable.get(piece).addCaptureAction(captureA, conditionA);
+            pieceTable.get(complementPiece).addCaptureAction(captureA, conditionA);
         }
     }
 
@@ -353,7 +328,9 @@ public class Parser {
         String[] arrangedArgs = {"", "", "", "", args[0]};
         assignBehavior(piece, arrangedArgs);
         Action captureA = actionTable.get(args[0].trim());
-        if (captureA != null) pieceTable.get(piece).addCaptureAction(captureA, null);
+        Condition conditionA = null;
+        if (args.length == 2)  conditionA = conditionTable.get(args[1].trim());
+        if (captureA != null) pieceTable.get(piece).addCaptureAction(captureA, conditionA);
     }
 
     private void assignBehavior(char piece, String[] args) {

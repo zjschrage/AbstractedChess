@@ -17,9 +17,9 @@ public class FenSerializer {
 
     public String getFen(Board b) {
         String fen = "";
-        for (int row = dimension.y() - 1; row >= 0; row--) {
+        for (int row = dimension.x() - 1; row >= 0; row--) {
             int spaceCount = 0;
-            for (int col = 0; col < dimension.x(); col++) {
+            for (int col = 0; col < dimension.y(); col++) {
                 Piece p = b.getBoard().get(new Coordinate(col, row)).getPiece();
                 if (p == null) {
                     spaceCount++;

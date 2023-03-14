@@ -76,12 +76,12 @@ $K9 = [-2, 0 ,1]
 $K10 = [2, 0 ,1]
 
 &first = [TIMES_MOVED, 0];
-#FirstCond = (~, ~, </, first>)
+#FirstCond = (PROPERTY, </, first>)
 
 $LR = [-4, 0, 1]
 $RR = [3, 0, 1]
-#LRCastle = (~, ~, <LR, first>)
-#RRCastle = (~, ~, <RR, first>)
+#LRCastle = (PROPERTY, <LR, first>)
+#RRCastle = (PROPERTY, <RR, first>)
 
 $KL1 = [-1, 0, 1]
 $KL2 = [-2, 0, 1]
@@ -89,11 +89,11 @@ $KL3 = [-3, 0, 1]
 $KR1 = [1, 0, 1]
 $KR2 = [2, 0, 1]
 
-#KIC1 = (~, <*, KL1>, ~)
-#KIC2 = (~, <*, KL2>, ~)
-#KIC3 = (~, <*, KL2>, ~)
-#KIC4 = (~, <*, KR1>, ~)
-#KIC5 = (~, <*, KR2>, ~)
+#KIC1 = (RELATIVE, <*, KL1>)
+#KIC2 = (RELATIVE, <*, KL2>)
+#KIC3 = (RELATIVE, <*, KL2>)
+#KIC4 = (RELATIVE, <*, KR1>)
+#KIC5 = (RELATIVE, <*, KR2>)
 
 !moveLRook = [MOVE, KL2, KR1];
 !moveRRook = [MOVE, KR1, KL1];
@@ -129,10 +129,10 @@ $P2 = [0, 2, 1]
 $P3 = [-1, 1, 1]
 $P4 = [1, 1, 1]
 
-#PIC1 = (~, <*, P1>, ~)
-#PIC2 = (~, <*, P2>, ~)
-#PCL  = (~, <-, P3>, ~)
-#PCR  = (~, <-, P4>, ~)
+#PIC1 = (RELATIVE, <*, P1>)
+#PIC2 = (RELATIVE, <*, P2>)
+#PCL  = (RELATIVE, <-, P3>)
+#PCR  = (RELATIVE, <-, P4>)
 
 P.cannot(P1, PIC1)
 P.must(P2, FirstCond)
@@ -147,10 +147,10 @@ $P2b = [0, -2, 1]
 $P3b = [-1, -1, 1]
 $P4b = [1, -1, 1]
 
-#PIC1b = (~, <*, P1b>, ~)
-#PIC2b = (~, <*, P2b>, ~)
-#PCLb  = (~, <-, P3b>, ~)
-#PCRb  = (~, <-, P4b>, ~)
+#PIC1b = (RELATIVE, <*, P1b>)
+#PIC2b = (RELATIVE, <*, P2b>)
+#PCLb  = (RELATIVE, <-, P3b>)
+#PCRb  = (RELATIVE, <-, P4b>)
 
 p.cannot(P1b, PIC1b)
 p.must(P2b, FirstCond)
@@ -165,8 +165,8 @@ p.must(P4b, PCRb)
 $L = [-1, 0, 1]
 $R = [1, 0, 1]
 &enPassantFlag = [CHECK_FLAG, 0, 1]
-#PLep = (~, ~, <-L, enPassantFlag>)
-#PRep = (~, ~, <-R, enPassantFlag>)
+#PLep = (PROPERTY, <-L, enPassantFlag>)
+#PRep = (PROPERTY, <-R, enPassantFlag>)
 
 $F = [0, 1, 1]
 $B = [0, -1, 1]

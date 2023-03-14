@@ -6,8 +6,6 @@ import chess.model.piece.PieceType;
 import chess.model.piece.PieceTypeID;
 import chess.model.rules.property.Property;
 
-import java.util.Map;
-
 public class PropertyCondition extends Condition<Property> {
     public PropertyCondition() {
         super();

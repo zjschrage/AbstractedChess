@@ -27,7 +27,7 @@ public class AppTest {
     public static void globalInit() {
         parser = new Parser();
         try {
-            parser.loadGameFile(Launcher.GAME_RESOURCE_FOLDER + "ChessUpdated.txt");
+            parser.loadGameFile(Launcher.GAME_RESOURCE_FOLDER + "Chess.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -210,6 +210,14 @@ public class AppTest {
         String gamepart2 = "50. f8=Q c3 51. Qb4+ Kc2 52. Qxc3+ Kxc3 53. Kf5 Kb2 54. g5 Kxa2" +
                 "55. g6 a5 56. g7 a4 57. g8=Q+ Kb2 58. Qg1 a3 59. Qf2+ Kb3 60. Qd2";
         verify(game, fen);
+    }
+
+    @Test
+    public void sad_game1() {
+        String ans = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR";
+        pm.move("e4");
+        pm.move("e4");
+        assertTrue(ans.equals(b.getFEN()));
     }
 
 }

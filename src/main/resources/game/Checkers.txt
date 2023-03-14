@@ -1,7 +1,7 @@
 %C
 
 ?1c1c1c1c/c1c1c1c1/1c1c1c1c/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
-//?1c5c/4C3/8/8/8/C1C1C1C1/1C1C1C1C/C1C1C1C1
+//?1c5c/4C3/8/8/8/C1C1C1C1/8/8
 
 //Checker
 
@@ -15,15 +15,15 @@ $JRa = [2, 2, 1]
 $JLb = [-2, -2, 1]
 $JRb = [2, -2, 1]
 
-#LaFoe  = (~, <-, La>, ~)
-#RaFoe  = (~, <-, Ra>, ~)
-#LbFoe  = (~, <-, Lb>, ~)
-#RbFoe  = (~, <-, Rb>, ~)
+#LaFoe  = (RELATIVE, <-, La>)
+#RaFoe  = (RELATIVE, <-, Ra>)
+#LbFoe  = (RELATIVE, <-, Lb>)
+#RbFoe  = (RELATIVE, <-, Rb>)
 
-#JLaFoe  = (~, <-, JLa>, ~)
-#JRaFoe  = (~, <-, JRa>, ~)
-#JLbFoe  = (~, <-, JLb>, ~)
-#JRbFoe  = (~, <-, JRb>, ~)
+#JLaFoe  = (RELATIVE, <-, JLa>)
+#JRaFoe  = (RELATIVE, <-, JRa>)
+#JLbFoe  = (RELATIVE, <-, JLb>)
+#JRbFoe  = (RELATIVE, <-, JRb>)
 
 !captureLa = [REMOVE, Rb];
 !captureRa = [REMOVE, Lb];
@@ -57,8 +57,8 @@ c.cannot(JRb, JRbFoe)
 !setKing = [SET_FLAG, 0, 1, 1000];
 &checkPromoteBlack = [CHECK_CORD, *, 1]
 &checkPromoteWhite = [CHECK_CORD, *, 6]
-#CPBlack  = (~, ~, </, checkPromoteBlack>)
-#CPWhite  = (~, ~, </, checkPromoteWhite>)
+#CPBlack  = (PROPERTY, </, checkPromoteBlack>)
+#CPWhite  = (PROPERTY, </, checkPromoteWhite>)
 
 $LaPromote = [-1, 1, 1]
 $RaPromote = [1, 1, 1]
@@ -82,7 +82,7 @@ c.must(RbPromote, CPBlack)
 c.action(RbPromote, setKing)
 
 &checkKing = [CHECK_FLAG, 0, 1]
-#isKing = (~, ~, </, checkKing>)
+#isKing = (PROPERTY, </, checkKing>)
 
 C.cannot(Lb, LbFoe)
 C.must(Lb, isKing)
